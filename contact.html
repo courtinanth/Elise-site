@@ -83,11 +83,11 @@
     <!-- HERO DE PAGE -->
     <section class="page-hero" aria-label="En-tête de la page contact">
       <div class="etoiles-deco" aria-hidden="true">
-        <span class="etoile">&#10022;</span>
-        <span class="etoile">&#10023;</span>
-        <span class="etoile">&#9734;</span>
-        <span class="etoile">&#10022;</span>
-        <span class="etoile">&#10023;</span>
+        <span class="etoile star-icon star-deco"><svg viewBox="0 0 24 24" fill="none"><path d="M12 0L12.8 9.2L22 12L12.8 14.8L12 24L11.2 14.8L2 12L11.2 9.2L12 0Z" fill="currentColor"/></svg></span>
+        <span class="etoile star-icon star-deco"><svg viewBox="0 0 24 24" fill="none"><path d="M12 0L12.8 9.2L22 12L12.8 14.8L12 24L11.2 14.8L2 12L11.2 9.2L12 0Z" fill="currentColor"/></svg></span>
+        <span class="etoile star-icon star-deco"><svg viewBox="0 0 24 24" fill="none"><path d="M12 0L12.8 9.2L22 12L12.8 14.8L12 24L11.2 14.8L2 12L11.2 9.2L12 0Z" fill="currentColor"/></svg></span>
+        <span class="etoile star-icon star-deco"><svg viewBox="0 0 24 24" fill="none"><path d="M12 0L12.8 9.2L22 12L12.8 14.8L12 24L11.2 14.8L2 12L11.2 9.2L12 0Z" fill="currentColor"/></svg></span>
+        <span class="etoile star-icon star-deco"><svg viewBox="0 0 24 24" fill="none"><path d="M12 0L12.8 9.2L22 12L12.8 14.8L12 24L11.2 14.8L2 12L11.2 9.2L12 0Z" fill="currentColor"/></svg></span>
       </div>
       <!-- Floral SVG decorations -->
       <svg class="floral-deco floral-deco-left" aria-hidden="true" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,20 +103,13 @@
         <path d="M70 60 Q80 75, 65 85 Q55 75, 70 60Z" fill="currentColor" opacity="0.08"/>
       </svg>
       <div class="container">
-        <h1 class="reveal">Parlons-nous &#9729;</h1>
+        <h1 class="reveal">Parlons-nous <span class="cloud-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg></span></h1>
         <p class="sous-titre-script reveal">Une question, un mot doux, ou juste besoin de dire bonjour ? Je lis tout.</p>
       </div>
     </section>
 
     <!-- Séparateur floral -->
-    <div class="separateur-floral" aria-hidden="true">
-      <svg viewBox="0 0 200 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 15 Q50 0, 100 15 Q150 30, 200 15" stroke="currentColor" stroke-width="1.5" opacity="0.18" fill="none"/>
-        <circle cx="100" cy="15" r="3" fill="currentColor" opacity="0.15"/>
-        <circle cx="60" cy="10" r="2" fill="currentColor" opacity="0.10"/>
-        <circle cx="140" cy="20" r="2" fill="currentColor" opacity="0.10"/>
-      </svg>
-    </div>
+    <span class="wave-separator" aria-hidden="true"><svg viewBox="0 0 200 12" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0 6 Q25 0, 50 6 T100 6 T150 6 T200 6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></span>
 
     <!-- SECTION CONTACT -->
     <section aria-label="Formulaire de contact et réseaux sociaux">
@@ -128,7 +121,13 @@
               <input type="text" name="prenom" placeholder="Ton prénom" required aria-label="Ton prénom">
               <input type="email" name="email" placeholder="Ton adresse email" required aria-label="Ton adresse email">
               <textarea name="message" placeholder="Ton message..." required aria-label="Ton message"></textarea>
-              <button type="submit" class="btn btn-primary">Envoyer mon message &#10024;</button>
+              <div class="rgpd-checkbox">
+                <label>
+                  <input type="checkbox" name="rgpd_consent" required>
+                  <span class="rgpd-text">J'accepte que mes données personnelles soient utilisées pour recevoir les communications d'Elise & Mind. Consultez notre <a href="politique-confidentialite.html" target="_blank">Politique de Confidentialité</a>. Vous pouvez vous désinscrire à tout moment.</span>
+                </label>
+              </div>
+              <button type="submit" class="btn btn-primary">Envoyer mon message <span class="star-icon star-sm"><svg viewBox="0 0 24 24" fill="none"><path d="M12 0L12.8 9.2L22 12L12.8 14.8L12 24L11.2 14.8L2 12L11.2 9.2L12 0Z" fill="currentColor"/></svg></span></button>
             </form>
           </div>
 
@@ -172,18 +171,13 @@
         </div>
 
         <!-- Séparateur floral -->
-        <div class="separateur-floral" aria-hidden="true">
-          <svg viewBox="0 0 200 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 15 Q50 30, 100 15 Q150 0, 200 15" stroke="currentColor" stroke-width="1.5" opacity="0.18" fill="none"/>
-            <circle cx="100" cy="15" r="3" fill="currentColor" opacity="0.15"/>
-            <circle cx="70" cy="20" r="2" fill="currentColor" opacity="0.10"/>
-            <circle cx="130" cy="10" r="2" fill="currentColor" opacity="0.10"/>
-          </svg>
-        </div>
+        <span class="wave-separator" aria-hidden="true"><svg viewBox="0 0 200 12" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0 6 Q25 0, 50 6 T100 6 T150 6 T200 6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></span>
+
+        <p class="text-center" style="margin-top: 24px;"><a href="mailto:contact@eliseandmind.com" style="color: #A68B6B;">contact@eliseandmind.com</a></p>
 
         <!-- DISCLAIMER -->
         <div class="disclaimer reveal" role="alert">
-          <p>&#9888;&#65039; <strong>Note importante :</strong> Je ne suis pas médecin ni professionnelle de santé mentale. Les contenus partagés sur ce site sont issus de mon expérience personnelle et n'ont pas vocation à remplacer un suivi médical ou psychologique. Si tu es en situation d'urgence vitale ou de détresse profonde, contacte le <strong>15</strong> (SAMU) ou le <strong>3114</strong> (numéro national de prévention du suicide).</p>
+          <p><span class="star-icon star-sm" style="color: #D4A574;"><svg viewBox="0 0 24 24" fill="none"><path d="M12 0L12.8 9.2L22 12L12.8 14.8L12 24L11.2 14.8L2 12L11.2 9.2L12 0Z" fill="currentColor"/></svg></span> <strong>Note importante :</strong> Je ne suis pas médecin ni professionnelle de santé mentale. Les contenus partagés sur ce site sont issus de mon expérience personnelle et n'ont pas vocation à remplacer un suivi médical ou psychologique. Si tu es en situation d'urgence vitale ou de détresse profonde, contacte le <strong>15</strong> (SAMU) ou le <strong>3114</strong> (numéro national de prévention du suicide).</p>
         </div>
       </div>
     </section>
@@ -235,6 +229,24 @@
     </div>
   </footer>
 
+  <!-- Cookie Banner -->
+  <div id="cookie-banner" class="cookie-banner" style="display: none;">
+    <div class="cookie-content">
+      <div class="cookie-text">
+        <p>
+          <strong>Ce site utilise des cookies</strong><br>
+          Nous utilisons des cookies pour améliorer votre expérience sur notre site.
+          En savoir plus dans notre <a href="politique-confidentialite.html">Politique de Confidentialité</a>.
+        </p>
+      </div>
+      <div class="cookie-buttons">
+        <button id="cookie-refuse" class="cookie-btn cookie-btn-refuse">Refuser</button>
+        <button id="cookie-accept" class="cookie-btn cookie-btn-accept">Accepter</button>
+      </div>
+    </div>
+  </div>
+
   <script src="js/main.js"></script>
+  <script src="js/cookies.js"></script>
 </body>
 </html>
