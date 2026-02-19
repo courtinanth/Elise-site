@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Bloquer les pages légales (non indexées)
+Disallow: /mentions-legales.html
+Disallow: /politique-confidentialite.html
+
+# Bloquer l'accès aux ressources non nécessaires
+Disallow: /images/*.pdf
+
+Sitemap: https://www.eliseandmind.com/sitemap.xml

@@ -1,0 +1,14 @@
+# Netlify
+.netlify/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+dist/
+.env
+
+# Claude Code
+.claude/
