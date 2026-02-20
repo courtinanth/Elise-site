@@ -399,7 +399,61 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* -----------------------------------------
-     15. SÉPARATEUR DORÉ — ANIMATION DE LARGEUR
+     15. FORMULAIRE NEWSLETTER — SOUMISSION AJAX
+     Envoie le formulaire sans rechargement,
+     affiche un message de succès inline
+     ----------------------------------------- */
+  const newsletterForm = document.getElementById('newsletter-form');
+
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // URL Google Apps Script — REMPLACE PAR TON URL DE DÉPLOIEMENT
+      const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkQcXmysRoCIRJwZDNun-0My2PqYe0wmDm7obCrOSZCsddP0_pu2VKvwqeURSh2lOwEw/exec';
+
+      const email = newsletterForm.querySelector('input[name="email"]').value;
+      const rgpdConsent = newsletterForm.querySelector('input[name="rgpd_consent"]').checked;
+      const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+
+      // État de chargement
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Envoi en cours...';
+
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, rgpd_consent: rgpdConsent })
+      })
+      .then(() => {
+        // Masquer le formulaire et afficher le message de succès
+        newsletterForm.style.display = 'none';
+        const successMsg = document.getElementById('newsletter-success');
+        if (successMsg) {
+          successMsg.style.display = 'block';
+          successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      })
+      .catch(() => {
+        // Afficher un message d'erreur
+        let errorMsg = newsletterForm.querySelector('.form-message.form-error');
+        if (!errorMsg) {
+          errorMsg = document.createElement('div');
+          errorMsg.className = 'form-message form-error';
+          errorMsg.textContent = 'Oups, une erreur est survenue. Réessaie dans quelques instants.';
+          newsletterForm.appendChild(errorMsg);
+        }
+        errorMsg.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      });
+    });
+  }
+
+  /* -----------------------------------------
+     16. SÉPARATEUR DORÉ — ANIMATION DE LARGEUR
      Le séparateur s'anime quand il est visible
      ----------------------------------------- */
   if (!prefersReducedMotion && 'IntersectionObserver' in window) {
