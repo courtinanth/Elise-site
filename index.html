@@ -27,24 +27,84 @@
   <meta name="twitter:description" content="Comprends ton anxiété, apaise-la avec des outils concrets et rejoins une communauté bienveillante.">
   <meta name="twitter:image" content="https://eliseandmind.com/images/logo-elise-mind.webp">
 
-  <!-- Structured Data -->
+  <!-- Structured Data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://eliseandmind.com/#organization",
+    "name": "Elise&Mind",
+    "url": "https://eliseandmind.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://eliseandmind.com/images/logo-elise-mind.webp",
+      "width": 300,
+      "height": 300
+    },
+    "description": "La Safe Place pour apaiser ton anxiété et ton hypersensibilité au quotidien.",
+    "email": "contact@eliseandmind.com",
+    "founder": {
+      "@type": "Person",
+      "@id": "https://eliseandmind.com/#elise",
+      "name": "Elise",
+      "url": "https://eliseandmind.com/mon-histoire"
+    },
+    "sameAs": [
+      "https://www.instagram.com/elise_andmind",
+      "https://www.tiktok.com/@elise_andmind",
+      "https://pin.it/3naW5RKUW"
+    ]
+  }
+  </script>
+
+  <!-- Structured Data: WebSite -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": "https://eliseandmind.com/#website",
     "name": "Elise&Mind",
     "url": "https://eliseandmind.com",
     "description": "La Safe Place pour apaiser ton anxiété et ton hypersensibilité au quotidien.",
-    "author": {
-      "@type": "Person",
-      "name": "Elise",
-      "url": "https://eliseandmind.com/mon-histoire"
-    },
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://eliseandmind.com/?s={search_term_string}",
-      "query-input": "required name=search_term_string"
+    "inLanguage": "fr",
+    "publisher": {
+      "@id": "https://eliseandmind.com/#organization"
     }
+  }
+  </script>
+
+  <!-- Structured Data: WebPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": "https://eliseandmind.com/",
+    "name": "Elise&Mind | La Safe Place pour apaiser ton anxiété au quotidien",
+    "url": "https://eliseandmind.com/",
+    "description": "Comprends ton anxiété, apaise-la avec des outils concrets et rejoins une communauté bienveillante. Elise&Mind, ta safe place pour l'anxiété et l'hypersensibilité.",
+    "isPartOf": {
+      "@id": "https://eliseandmind.com/#website"
+    },
+    "about": {
+      "@id": "https://eliseandmind.com/#organization"
+    },
+    "inLanguage": "fr"
+  }
+  </script>
+
+  <!-- Structured Data: BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "https://eliseandmind.com/"
+      }
+    ]
   }
   </script>
 

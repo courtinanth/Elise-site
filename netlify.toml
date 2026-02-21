@@ -12,7 +12,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com; connect-src 'self' https://fnihtzsynbpcvbztwsku.supabase.co https://script.google.com; img-src 'self' data: https://eliseandmind.com; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://fnihtzsynbpcvbztwsku.supabase.co https://script.google.com"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com; connect-src 'self' https://fnihtzsynbpcvbztwsku.supabase.co https://script.google.com; img-src 'self' data: https://eliseandmind.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://fnihtzsynbpcvbztwsku.supabase.co https://script.google.com"
 
 # ===== REDIRECTS =====
 # Force non-www (le domaine principal est eliseandmind.com sans www)

@@ -27,32 +27,77 @@
   <meta name="twitter:description" content="Je m'appelle Elise. Pendant des années, j'ai vécu avec l'anxiété et l'hypersensibilité. Découvre mon parcours et pourquoi j'ai créé Elise&Mind.">
   <meta name="twitter:image" content="https://eliseandmind.com/images/logo-elise-mind.webp">
 
-  <!-- Structured Data -->
+  <!-- Structured Data: Article -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "Mon histoire : de l'anxiété à l'apaisement",
     "description": "Je m'appelle Elise. Pendant des années, j'ai vécu avec l'anxiété et l'hypersensibilité. Découvre mon parcours et pourquoi j'ai créé Elise&Mind.",
-    "image": "https://eliseandmind.com/images/logo-elise-mind.webp",
+    "image": "https://eliseandmind.com/images/A7401799.webp",
+    "datePublished": "2026-02-01",
+    "dateModified": "2026-02-21",
+    "inLanguage": "fr",
     "author": {
       "@type": "Person",
+      "@id": "https://eliseandmind.com/#elise",
       "name": "Elise",
       "url": "https://eliseandmind.com/mon-histoire"
     },
     "publisher": {
-      "@type": "Organization",
-      "name": "Elise&Mind",
-      "url": "https://eliseandmind.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://eliseandmind.com/images/logo-elise-mind.webp"
-      }
+      "@id": "https://eliseandmind.com/#organization"
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": "https://eliseandmind.com/mon-histoire"
+    },
+    "isPartOf": {
+      "@id": "https://eliseandmind.com/#website"
     }
+  }
+  </script>
+
+  <!-- Structured Data: Person (AboutPage) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "Mon histoire : de l'anxiété à l'apaisement",
+    "url": "https://eliseandmind.com/mon-histoire",
+    "mainEntity": {
+      "@type": "Person",
+      "@id": "https://eliseandmind.com/#elise",
+      "name": "Elise",
+      "url": "https://eliseandmind.com/mon-histoire",
+      "image": "https://eliseandmind.com/images/A7401755.webp",
+      "jobTitle": "Créatrice d'Elise&Mind",
+      "description": "Fondatrice d'Elise&Mind, Elise partage son parcours avec l'anxiété et l'hypersensibilité pour aider les autres à trouver l'apaisement.",
+      "worksFor": {
+        "@id": "https://eliseandmind.com/#organization"
+      }
+    }
+  }
+  </script>
+
+  <!-- Structured Data: BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "https://eliseandmind.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Mon Histoire",
+        "item": "https://eliseandmind.com/mon-histoire"
+      }
+    ]
   }
   </script>
 

@@ -25,65 +25,112 @@
   <meta name="twitter:description" content="Retrouve tous mes conseils, outils et astuces pour mieux vivre avec l'anxiété et l'hypersensibilité. Des articles concrets et bienveillants.">
   <meta name="twitter:image" content="https://eliseandmind.com/images/logo-elise-mind.webp">
 
-  <!-- JSON-LD Structured Data -->
+  <!-- JSON-LD: CollectionPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Conseils anxiété et hypersensibilité | Blog Elise&Mind",
+    "description": "Retrouve tous mes conseils, outils et astuces pour mieux vivre avec l'anxiété et l'hypersensibilité.",
+    "url": "https://eliseandmind.com/mes-conseils",
+    "inLanguage": "fr",
+    "isPartOf": { "@id": "https://eliseandmind.com/#website" },
+    "about": { "@type": "Thing", "name": "Anxiété et hypersensibilité" }
+  }
+  </script>
+
+  <!-- JSON-LD: Blog + BlogPostings -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Blog",
-    "name": "Conseils anxiété et hypersensibilité | Blog Elise&Mind",
-    "description": "Retrouve tous mes conseils, outils et astuces pour mieux vivre avec l'anxiété et l'hypersensibilité. Des articles concrets et bienveillants.",
+    "@id": "https://eliseandmind.com/mes-conseils#blog",
+    "name": "Blog Elise&Mind",
     "url": "https://eliseandmind.com/mes-conseils",
     "inLanguage": "fr",
-    "publisher": {
-      "@type": "Organization",
-      "name": "Elise&Mind",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://eliseandmind.com/images/logo-elise-mind.webp"
-      }
-    },
+    "publisher": { "@id": "https://eliseandmind.com/#organization" },
     "blogPost": [
       {
         "@type": "BlogPosting",
         "headline": "Anxiété vs Stress : quelle est vraiment la différence ?",
         "datePublished": "2026-02-12",
         "description": "Découvre pourquoi ces deux termes ne veulent pas dire la même chose, et comment les distinguer au quotidien.",
-        "image": "https://eliseandmind.com/images/IMG_0044.webp"
+        "image": "https://eliseandmind.com/images/IMG_0044.webp",
+        "author": { "@id": "https://eliseandmind.com/#elise" },
+        "publisher": { "@id": "https://eliseandmind.com/#organization" },
+        "inLanguage": "fr"
       },
       {
         "@type": "BlogPosting",
         "headline": "La technique 5-4-3-2-1 : ton ancrage en 2 minutes",
         "datePublished": "2026-02-08",
         "description": "Un exercice simple et rapide pour te reconnecter au moment présent quand l'anxiété monte.",
-        "image": "https://eliseandmind.com/images/IMG_0238.webp"
+        "image": "https://eliseandmind.com/images/IMG_0238.webp",
+        "author": { "@id": "https://eliseandmind.com/#elise" },
+        "publisher": { "@id": "https://eliseandmind.com/#organization" },
+        "inLanguage": "fr"
       },
       {
         "@type": "BlogPosting",
         "headline": "Ma morning routine anti-anxiété (testée et approuvée)",
         "datePublished": "2026-02-03",
         "description": "Les petits rituels du matin qui m'aident à démarrer la journée sans boule au ventre.",
-        "image": "https://eliseandmind.com/images/IMG_0083.webp"
+        "image": "https://eliseandmind.com/images/IMG_0083.webp",
+        "author": { "@id": "https://eliseandmind.com/#elise" },
+        "publisher": { "@id": "https://eliseandmind.com/#organization" },
+        "inLanguage": "fr"
       },
       {
         "@type": "BlogPosting",
         "headline": "Crise d'angoisse : que se passe-t-il vraiment dans ton corps ?",
         "datePublished": "2026-01-28",
         "description": "Comprendre les mécanismes de la crise pour mieux la gérer et arrêter d'en avoir peur.",
-        "image": "https://eliseandmind.com/images/IMG_0029.webp"
+        "image": "https://eliseandmind.com/images/IMG_0029.webp",
+        "author": { "@id": "https://eliseandmind.com/#elise" },
+        "publisher": { "@id": "https://eliseandmind.com/#organization" },
+        "inLanguage": "fr"
       },
       {
         "@type": "BlogPosting",
         "headline": "Respiration carrée : l'exercice qui calme tout en 4 temps",
         "datePublished": "2026-01-22",
         "description": "La technique de respiration préférée des Navy SEALs pour retrouver son calme en situation de stress intense.",
-        "image": "https://eliseandmind.com/images/IMG_0355.webp"
+        "image": "https://eliseandmind.com/images/IMG_0355.webp",
+        "author": { "@id": "https://eliseandmind.com/#elise" },
+        "publisher": { "@id": "https://eliseandmind.com/#organization" },
+        "inLanguage": "fr"
       },
       {
         "@type": "BlogPosting",
         "headline": "5 comptes Instagram qui m'aident quand ça ne va pas",
         "datePublished": "2026-01-15",
         "description": "Ma sélection de comptes bienveillants qui parlent d'anxiété sans tabou et avec douceur.",
-        "image": "https://eliseandmind.com/images/IMG_2030.webp"
+        "image": "https://eliseandmind.com/images/IMG_2030.webp",
+        "author": { "@id": "https://eliseandmind.com/#elise" },
+        "publisher": { "@id": "https://eliseandmind.com/#organization" },
+        "inLanguage": "fr"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Structured Data: BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "https://eliseandmind.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Mes Conseils",
+        "item": "https://eliseandmind.com/mes-conseils"
       }
     ]
   }
