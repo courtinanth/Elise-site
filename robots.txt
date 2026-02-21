@@ -5,6 +5,10 @@ Allow: /
 Disallow: /mentions-legales
 Disallow: /politique-confidentialite
 
+# Bloquer le backoffice admin (aucun crawl)
+Disallow: /admin/
+Disallow: /admin
+
 # Bloquer l'accès aux ressources non nécessaires
 Disallow: /images/*.pdf
 
