@@ -2,10 +2,10 @@ User-agent: *
 Allow: /
 
 # Bloquer les pages légales (non indexées)
-Disallow: /mentions-legales.html
-Disallow: /politique-confidentialite.html
+Disallow: /mentions-legales
+Disallow: /politique-confidentialite
 
 # Bloquer l'accès aux ressources non nécessaires
 Disallow: /images/*.pdf
 
-Sitemap: https://www.eliseandmind.com/sitemap.xml
+Sitemap: https://eliseandmind.com/sitemap.xml
