@@ -109,6 +109,18 @@
   </script>
 
   <link rel="icon" type="image/webp" href="images/favicon.webp">
+
+  <!-- Preconnect Google Fonts (élimine le DNS+TLS delay ~300ms) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts via <link> au lieu de @import (non render-blocking en cascade) -->
+  <!-- Poids réduits : uniquement ceux utilisés dans le CSS -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Sacramento&display=swap">
+
+  <!-- Preload image LCP (hero) pour accélérer le Largest Contentful Paint -->
+  <link rel="preload" as="image" href="images/A7401755.webp" type="image/webp">
+
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -119,7 +131,7 @@
   <nav class="navbar" id="navbar" aria-label="Navigation principale">
     <div class="container">
       <a href="index.html" class="navbar-logo" aria-label="Elise&Mind — Accueil">
-        <img src="images/logo-elise-mind.webp" alt="Logo Elise&Mind — Safe Place pour apaiser l'anxiété et l'hypersensibilité" class="navbar-logo-img">
+        <img src="images/logo-elise-mind.webp" alt="Logo Elise&Mind — Safe Place pour apaiser l'anxiété et l'hypersensibilité" class="navbar-logo-img" width="150" height="50">
       </a>
       <div class="navbar-links" id="navLinks">
         <a href="index.html" class="active">Accueil</a>
@@ -181,7 +193,7 @@
         </div>
         <div class="hero-image reveal-right">
           <div class="image-placeholder polaroid">
-            <img src="images/A7401755.webp" alt="Elise, créatrice d'Elise&Mind, portrait souriant — coach bien-être et anxiété" loading="lazy">
+            <img src="images/A7401755.webp" alt="Elise, créatrice d'Elise&Mind, portrait souriant — coach bien-être et anxiété" fetchpriority="high" width="600" height="800">
           </div>
         </div>
       </div>
@@ -247,7 +259,7 @@
         <div class="articles-grille">
           <article class="article-carte reveal-scale">
             <div class="article-carte-image">
-              <img src="images/IMG_0038.webp" alt="Article sur la différence entre anxiété et stress — Blog Elise&Mind" loading="lazy">
+              <img src="images/IMG_0038.webp" alt="Article sur la différence entre anxiété et stress — Blog Elise&Mind" loading="lazy" width="400" height="300">
             </div>
             <div class="article-carte-contenu">
               <span class="article-tag comprendre">Comprendre</span>
@@ -259,7 +271,7 @@
 
           <article class="article-carte reveal-scale">
             <div class="article-carte-image">
-              <img src="images/IMG_0165.webp" alt="Technique d'ancrage 5-4-3-2-1 pour calmer l'anxiété rapidement — Elise&Mind" loading="lazy">
+              <img src="images/IMG_0165.webp" alt="Technique d'ancrage 5-4-3-2-1 pour calmer l'anxiété rapidement — Elise&Mind" loading="lazy" width="400" height="300">
             </div>
             <div class="article-carte-contenu">
               <span class="article-tag outils">Boîte à Outils</span>
@@ -271,7 +283,7 @@
 
           <article class="article-carte reveal-scale">
             <div class="article-carte-image">
-              <img src="images/IMG_0083.webp" alt="Morning routine anti-anxiété — rituels du matin pour apaiser le stress par Elise&Mind" loading="lazy">
+              <img src="images/IMG_0083.webp" alt="Morning routine anti-anxiété — rituels du matin pour apaiser le stress par Elise&Mind" loading="lazy" width="400" height="300">
             </div>
             <div class="article-carte-contenu">
               <span class="article-tag lifestyle">Lifestyle</span>
@@ -320,7 +332,7 @@
       <div class="footer-grille">
         <!-- Colonne 1 — Logo & tagline -->
         <div class="footer-col">
-          <img src="images/logo-elise-mind.webp" alt="Logo Elise&Mind — Safe Place pour apaiser l'anxiété et l'hypersensibilité" class="footer-logo-img">
+          <img src="images/logo-elise-mind.webp" alt="Logo Elise&Mind — Safe Place pour apaiser l'anxiété et l'hypersensibilité" class="footer-logo-img" width="150" height="50">
           <p>La Safe Place pour apaiser ton anxiété.</p>
         </div>
         <!-- Colonne 2 — Navigation -->
@@ -378,7 +390,7 @@
     </div>
   </div>
 
-  <script src="js/main.js"></script>
-  <script src="js/cookies.js"></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/cookies.js" defer></script>
 </body>
 </html>

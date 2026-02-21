@@ -3,8 +3,7 @@
    Style : Boho Chic Apaisant
    ============================================= */
 
-/* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Sacramento&display=swap');
+/* --- Google Fonts chargées via <link> dans le HTML pour éviter le render-blocking --- */
 
 /* --- Variables CSS --- */
 :root {
