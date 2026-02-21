@@ -453,7 +453,67 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* -----------------------------------------
-     16. SÉPARATEUR DORÉ — ANIMATION DE LARGEUR
+     16. FORMULAIRE FICHE SOS — SOUMISSION AJAX
+     Envoie les données vers Google Sheets,
+     puis redirige vers la fiche PDF
+     ----------------------------------------- */
+  const ficheSosForm = document.getElementById('fiche-sos-form');
+
+  if (ficheSosForm) {
+    ficheSosForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkQcXmysRoCIRJwZDNun-0My2PqYe0wmDm7obCrOSZCsddP0_pu2VKvwqeURSh2lOwEw/exec';
+      const REDIRECT_URL = 'https://drive.google.com/file/d/1oRn1a0GaoGZxhTTyEuZZqdcqnlrGZ4pg/view';
+
+      const prenom = ficheSosForm.querySelector('input[name="prenom"]').value;
+      const email = ficheSosForm.querySelector('input[name="email"]').value;
+      const rgpdConsent = ficheSosForm.querySelector('input[name="rgpd_consent"]').checked;
+      const submitBtn = ficheSosForm.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Envoi en cours...';
+
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prenom: prenom,
+          email: email,
+          rgpd_consent: rgpdConsent,
+          source: 'fiche-sos'
+        })
+      })
+      .then(() => {
+        ficheSosForm.style.display = 'none';
+        const successMsg = document.getElementById('fiche-sos-success');
+        if (successMsg) {
+          successMsg.style.display = 'block';
+          successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        setTimeout(() => {
+          window.open(REDIRECT_URL, '_blank');
+        }, 1500);
+      })
+      .catch(() => {
+        let errorMsg = ficheSosForm.querySelector('.form-message.form-error');
+        if (!errorMsg) {
+          errorMsg = document.createElement('div');
+          errorMsg.className = 'form-message form-error';
+          errorMsg.textContent = 'Oups, une erreur est survenue. Réessaie dans quelques instants.';
+          ficheSosForm.appendChild(errorMsg);
+        }
+        errorMsg.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      });
+    });
+  }
+
+  /* -----------------------------------------
+     17. SÉPARATEUR DORÉ — ANIMATION DE LARGEUR
      Le séparateur s'anime quand il est visible
      ----------------------------------------- */
   if (!prefersReducedMotion && 'IntersectionObserver' in window) {

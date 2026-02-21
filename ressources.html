@@ -151,7 +151,7 @@
               En t'inscrivant, tu recevras aussi ma <strong>newsletter</strong> avec des conseils exclusifs pour apaiser ton anxiété, directement dans ta boîte mail.
             </p>
 
-            <form class="formulaire-ressource" action="https://forms.gle/g2uKQM7epD92SYydA" target="_blank" method="GET" aria-label="Formulaire de téléchargement de la Fiche SOS">
+            <form class="formulaire-ressource" id="fiche-sos-form" aria-label="Formulaire de téléchargement de la Fiche SOS">
               <input type="text" name="prenom" placeholder="Ton prénom" required aria-label="Ton prénom">
               <input type="email" name="email" placeholder="Ton adresse email" required aria-label="Ton adresse email">
               <div class="rgpd-checkbox">
@@ -162,6 +162,10 @@
               </div>
               <button type="submit" class="btn btn-primary">Recevoir ma Fiche SOS gratuite <span class="cloud-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg></span></button>
             </form>
+            <div id="fiche-sos-success" class="form-message form-success" style="display:none;">
+              <strong style="font-size:1.2em;">Ta Fiche SOS arrive !</strong><br>
+              Merci pour ton inscription. Tu vas être redirigée vers ta fiche...
+            </div>
           </div>
         </div>
       </div>
@@ -190,7 +194,7 @@
               Chargement du formulaire...
             </iframe>
           </div>
-          <p style="font-size: 0.85em; color: #8B7B6B; margin-top: 12px; text-align: center;">Si le formulaire ne s'affiche pas, <a href="https://forms.gle/UwFtvc15MBjih9sy9" target="_blank" rel="noopener" style="color: #A68B6B;">clique ici pour y accéder</a>.</p>
+          <p style="font-size: 0.85em; color: #8B7B6B; margin-top: 12px; text-align: center;">Si le formulaire ne s'affiche pas, <a href="https://forms.gle/UwFtvc15MBjih9sy9" target="_blank" rel="noopener" style="color: #A68B6B; text-decoration: underline;">clique ici pour y accéder</a>.</p>
         </div>
       </div>
     </section>

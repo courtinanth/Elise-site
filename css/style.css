@@ -1877,6 +1877,10 @@ section {
     text-align: center;
   }
 
+  .ressource-contenu .reveal-left {
+    order: 1;
+  }
+
   .formulaire-ressource {
     margin: 0 auto;
   }
