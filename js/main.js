@@ -121,35 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* -----------------------------------------
      5. FILTRES DE CATEGORIES (Blog)
+     Gere desormais par blog.js via Supabase
+     (filtrage cote serveur + pagination)
      ----------------------------------------- */
-  const filtreBtns = document.querySelectorAll('.filtre-btn');
-  const blogGrille = document.getElementById('blogGrille');
-
-  if (filtreBtns.length > 0 && blogGrille) {
-    const articles = blogGrille.querySelectorAll('.article-carte');
-
-    filtreBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filtreBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const filtre = btn.dataset.filtre;
-        let delai = 0;
-
-        articles.forEach(article => {
-          if (filtre === 'tous' || article.dataset.categorie === filtre) {
-            article.style.display = '';
-            article.classList.remove('visible');
-            // Animation en cascade
-            setTimeout(() => article.classList.add('visible'), delai);
-            delai += 100;
-          } else {
-            article.style.display = 'none';
-          }
-        });
-      });
-    });
-  }
 
   /* -----------------------------------------
      6. PARTICULES FLOTTANTES

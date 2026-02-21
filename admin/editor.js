@@ -26,10 +26,10 @@ async function renderEditor(articleId) {
     isNewArticle = !articleId;
     hasUnsavedChanges = false;
 
-    // Charger les collections
+    // Charger les collections (avec slug pour l'apercu URL)
     const { data: collections } = await supabase
         .from('collections')
-        .select('id, name')
+        .select('id, name, slug')
         .order('name');
 
     // Charger l'article si edition
@@ -126,7 +126,7 @@ async function renderEditor(articleId) {
                                    placeholder="mon-article"
                                    oninput="onSlugInput()">
                             <div class="slug-preview" id="slug-preview">
-                                eliseandmind.com/blog/<strong id="slug-display">${a.slug || '...'}</strong>
+                                eliseandmind.com/blog/<span id="slug-collection-display">${getCollectionSlugForPreview(a.collection_id, collections)}</span>/<strong id="slug-display">${a.slug || '...'}</strong>
                                 <span id="slug-status"></span>
                             </div>
                         </div>
@@ -200,10 +200,10 @@ async function renderEditor(articleId) {
                 <div class="editor-block">
                     <div class="editor-block-header">Collection</div>
                     <div class="editor-block-body">
-                        <select id="editor-collection" class="form-select" onchange="markDirty()">
+                        <select id="editor-collection" class="form-select" onchange="markDirty(); updateSlugCollectionPreview();">
                             <option value="">— Aucune collection —</option>
                             ${(collections || []).map(c =>
-                                `<option value="${c.id}" ${a.collection_id === c.id ? 'selected' : ''}>${escapeHtml(c.name)}</option>`
+                                `<option value="${c.id}" data-slug="${escapeHtml(c.slug || slugify(c.name))}" ${a.collection_id === c.id ? 'selected' : ''}>${escapeHtml(c.name)}</option>`
                             ).join('')}
                         </select>
                         <button class="btn btn-outline btn-sm mt-1" onclick="showQuickCollectionModal()">+ Nouvelle collection</button>
@@ -329,6 +329,32 @@ function destroyTinyMCE() {
 }
 
 // ==========================================
+// HELPER : SLUG COLLECTION POUR PREVIEW URL
+// ==========================================
+
+function getCollectionSlugForPreview(collectionId, collections) {
+    if (!collectionId || !collections) return 'blog';
+    const col = collections.find(c => c.id === collectionId);
+    return col ? col.slug || 'blog' : 'blog';
+}
+
+function updateSlugCollectionPreview() {
+    const collectionSelect = document.getElementById('editor-collection');
+    const collectionDisplay = document.getElementById('slug-collection-display');
+    if (!collectionSelect || !collectionDisplay) return;
+
+    const selectedOption = collectionSelect.options[collectionSelect.selectedIndex];
+    if (selectedOption && selectedOption.value) {
+        // On utilise le slug stocke dans data-slug, ou on slugifie le texte
+        const slug = selectedOption.dataset.slug || slugify(selectedOption.textContent);
+        collectionDisplay.textContent = slug;
+    } else {
+        collectionDisplay.textContent = 'blog';
+    }
+    updateSeoPreview();
+}
+
+// ==========================================
 // GESTION DU TITRE ET DU SLUG
 // ==========================================
 
@@ -426,6 +452,7 @@ function updateSeoCounters() {
 function updateSeoPreview() {
     const title = document.getElementById('editor-meta-title')?.value || document.getElementById('editor-title')?.value || 'Titre de l\'article';
     const slug = document.getElementById('editor-slug')?.value || '...';
+    const collectionSlug = document.getElementById('slug-collection-display')?.textContent || 'blog';
     const desc = document.getElementById('editor-meta-desc')?.value || 'Description de l\'article...';
 
     const previewTitle = document.getElementById('seo-preview-title');
@@ -433,7 +460,7 @@ function updateSeoPreview() {
     const previewDesc = document.getElementById('seo-preview-desc');
 
     if (previewTitle) previewTitle.textContent = title;
-    if (previewUrl) previewUrl.textContent = `eliseandmind.com/blog/${slug}`;
+    if (previewUrl) previewUrl.textContent = `eliseandmind.com/blog/${collectionSlug}/${slug}`;
     if (previewDesc) previewDesc.textContent = desc;
 }
 
@@ -765,6 +792,7 @@ async function saveQuickCollection() {
         if (select) {
             const option = document.createElement('option');
             option.value = data.id;
+            option.dataset.slug = slug;
             option.textContent = name;
             option.selected = true;
             select.appendChild(option);
@@ -773,6 +801,7 @@ async function saveQuickCollection() {
         hideModal();
         showToast('Collection creee', 'success');
         markDirty();
+        updateSlugCollectionPreview();
     } catch (err) {
         console.error('Erreur creation collection:', err);
         if (err.code === '23505') {

@@ -255,7 +255,7 @@ async function renderDashboard() {
             supabase.from('articles').select('id', { count: 'exact', head: true }),
             supabase.from('articles').select('id', { count: 'exact', head: true }).eq('status', 'published'),
             supabase.from('articles').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
-            supabase.from('articles').select('id, title, status, updated_at, slug').order('updated_at', { ascending: false }).limit(5)
+            supabase.from('articles').select('id, title, status, updated_at, slug, collections(slug)').order('updated_at', { ascending: false }).limit(5)
         ]);
 
         const totalCount = totalRes.count || 0;
@@ -310,7 +310,7 @@ async function renderDashboard() {
                                     <td>
                                         <div class="actions-cell">
                                             <button class="btn-icon" onclick="window.location.hash='#articles/edit/${a.id}'" title="Modifier">&#9998;</button>
-                                            ${a.status === 'published' ? `<a href="/blog/${a.slug}" target="_blank" class="btn-icon" title="Voir">&#128065;</a>` : ''}
+                                            ${a.status === 'published' ? `<a href="/blog/${a.collections?.slug || 'blog'}/${a.slug}" target="_blank" class="btn-icon" title="Voir">&#128065;</a>` : ''}
                                         </div>
                                     </td>
                                 </tr>
@@ -391,7 +391,7 @@ async function loadArticlesView() {
     try {
         let query = supabase
             .from('articles')
-            .select('id, title, slug, status, collection_id, created_at, updated_at, collections(name)', { count: 'exact' });
+            .select('id, title, slug, status, collection_id, created_at, updated_at, collections(name, slug)', { count: 'exact' });
 
         if (status) query = query.eq('status', status);
         if (collection) query = query.eq('collection_id', collection);
@@ -445,7 +445,7 @@ async function loadArticlesView() {
                             <td>
                                 <div class="actions-cell">
                                     <button class="btn-icon" onclick="window.location.hash='#articles/edit/${a.id}'" title="Modifier">&#9998;</button>
-                                    ${a.status === 'published' ? `<a href="/blog/${a.slug}" target="_blank" class="btn-icon" title="Voir sur le site">&#128065;</a>` : ''}
+                                    ${a.status === 'published' ? `<a href="/blog/${a.collections?.slug || 'blog'}/${a.slug}" target="_blank" class="btn-icon" title="Voir sur le site">&#128065;</a>` : ''}
                                     <button class="btn-icon danger" onclick="confirmDeleteArticle('${a.id}', '${escapeHtml(a.title).replace(/'/g, "\\'")}')" title="Supprimer">&#128465;</button>
                                 </div>
                             </td>
@@ -596,7 +596,7 @@ async function showCollectionModal(collectionId) {
             <div class="form-group">
                 <label class="form-label">Slug</label>
                 <input type="text" id="collection-slug" class="form-input" value="${isEdit ? escapeHtml(collection.slug) : ''}" placeholder="anxiete">
-                <div class="form-hint">URL : eliseandmind.com/blog/collection/<span id="collection-slug-preview">${isEdit ? collection.slug : '...'}</span></div>
+                <div class="form-hint">URL des articles : eliseandmind.com/blog/<span id="collection-slug-preview">${isEdit ? collection.slug : '...'}</span>/slug-article</div>
             </div>
             <div class="form-group">
                 <label class="form-label">Description</label>

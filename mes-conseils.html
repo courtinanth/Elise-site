@@ -39,7 +39,7 @@
   }
   </script>
 
-  <!-- JSON-LD: Blog + BlogPostings -->
+  <!-- JSON-LD: Blog (articles charges dynamiquement) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -48,69 +48,7 @@
     "name": "Blog Elise&Mind",
     "url": "https://eliseandmind.com/mes-conseils",
     "inLanguage": "fr",
-    "publisher": { "@id": "https://eliseandmind.com/#organization" },
-    "blogPost": [
-      {
-        "@type": "BlogPosting",
-        "headline": "Anxiété vs Stress : quelle est vraiment la différence ?",
-        "datePublished": "2026-02-12",
-        "description": "Découvre pourquoi ces deux termes ne veulent pas dire la même chose, et comment les distinguer au quotidien.",
-        "image": "https://eliseandmind.com/images/IMG_0044.webp",
-        "author": { "@id": "https://eliseandmind.com/#elise" },
-        "publisher": { "@id": "https://eliseandmind.com/#organization" },
-        "inLanguage": "fr"
-      },
-      {
-        "@type": "BlogPosting",
-        "headline": "La technique 5-4-3-2-1 : ton ancrage en 2 minutes",
-        "datePublished": "2026-02-08",
-        "description": "Un exercice simple et rapide pour te reconnecter au moment présent quand l'anxiété monte.",
-        "image": "https://eliseandmind.com/images/IMG_0238.webp",
-        "author": { "@id": "https://eliseandmind.com/#elise" },
-        "publisher": { "@id": "https://eliseandmind.com/#organization" },
-        "inLanguage": "fr"
-      },
-      {
-        "@type": "BlogPosting",
-        "headline": "Ma morning routine anti-anxiété (testée et approuvée)",
-        "datePublished": "2026-02-03",
-        "description": "Les petits rituels du matin qui m'aident à démarrer la journée sans boule au ventre.",
-        "image": "https://eliseandmind.com/images/IMG_0083.webp",
-        "author": { "@id": "https://eliseandmind.com/#elise" },
-        "publisher": { "@id": "https://eliseandmind.com/#organization" },
-        "inLanguage": "fr"
-      },
-      {
-        "@type": "BlogPosting",
-        "headline": "Crise d'angoisse : que se passe-t-il vraiment dans ton corps ?",
-        "datePublished": "2026-01-28",
-        "description": "Comprendre les mécanismes de la crise pour mieux la gérer et arrêter d'en avoir peur.",
-        "image": "https://eliseandmind.com/images/IMG_0029.webp",
-        "author": { "@id": "https://eliseandmind.com/#elise" },
-        "publisher": { "@id": "https://eliseandmind.com/#organization" },
-        "inLanguage": "fr"
-      },
-      {
-        "@type": "BlogPosting",
-        "headline": "Respiration carrée : l'exercice qui calme tout en 4 temps",
-        "datePublished": "2026-01-22",
-        "description": "La technique de respiration préférée des Navy SEALs pour retrouver son calme en situation de stress intense.",
-        "image": "https://eliseandmind.com/images/IMG_0355.webp",
-        "author": { "@id": "https://eliseandmind.com/#elise" },
-        "publisher": { "@id": "https://eliseandmind.com/#organization" },
-        "inLanguage": "fr"
-      },
-      {
-        "@type": "BlogPosting",
-        "headline": "5 comptes Instagram qui m'aident quand ça ne va pas",
-        "datePublished": "2026-01-15",
-        "description": "Ma sélection de comptes bienveillants qui parlent d'anxiété sans tabou et avec douceur.",
-        "image": "https://eliseandmind.com/images/IMG_2030.webp",
-        "author": { "@id": "https://eliseandmind.com/#elise" },
-        "publisher": { "@id": "https://eliseandmind.com/#organization" },
-        "inLanguage": "fr"
-      }
-    ]
+    "publisher": { "@id": "https://eliseandmind.com/#organization" }
   }
   </script>
 
@@ -138,6 +76,7 @@
 
   <link rel="icon" type="image/webp" href="images/favicon.webp">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -204,102 +143,21 @@
         <div class="blog-layout">
           <!-- Contenu principal -->
           <div>
-            <!-- Filtres -->
-            <div class="blog-filtres reveal">
+            <!-- Filtres dynamiques — remplis par JS -->
+            <div class="blog-filtres reveal" id="blogFiltres">
               <button class="filtre-btn active" data-filtre="tous">Tous</button>
-              <button class="filtre-btn" data-filtre="comprendre">Comprendre l'Anxiété</button>
-              <button class="filtre-btn" data-filtre="outils">La Boîte à Outils</button>
-              <button class="filtre-btn" data-filtre="lifestyle">Lifestyle & Humeur</button>
             </div>
 
-            <!-- Grille d'articles -->
+            <!-- Grille d'articles — remplie par JS depuis Supabase -->
             <div class="blog-grille" id="blogGrille">
-
-              <!-- Article 1 -->
-              <article class="article-carte reveal" data-categorie="comprendre">
-                <div class="article-carte-image">
-                  <img src="images/IMG_0044.webp" alt="Comprendre la différence entre anxiété et stress — article blog Elise&Mind" loading="lazy">
-                </div>
-                <div class="article-carte-contenu">
-                  <span class="article-tag comprendre">Comprendre</span>
-                  <span class="article-date">12 février 2026</span>
-                  <h3>Anxiété vs Stress : quelle est vraiment la différence ?</h3>
-                  <p>Découvre pourquoi ces deux termes ne veulent pas dire la même chose, et comment les distinguer au quotidien.</p>
-                  <a href="#" class="lire-suite">Lire &rarr;</a>
-                </div>
-              </article>
-
-              <!-- Article 2 -->
-              <article class="article-carte reveal" data-categorie="outils">
-                <div class="article-carte-image">
-                  <img src="images/IMG_0238.webp" alt="Technique d'ancrage 5-4-3-2-1 pour calmer une crise d'anxiété — Elise&Mind" loading="lazy">
-                </div>
-                <div class="article-carte-contenu">
-                  <span class="article-tag outils">Boîte à Outils</span>
-                  <span class="article-date">8 février 2026</span>
-                  <h3>La technique 5-4-3-2-1 : ton ancrage en 2 minutes</h3>
-                  <p>Un exercice simple et rapide pour te reconnecter au moment présent quand l'anxiété monte.</p>
-                  <a href="#" class="lire-suite">Lire &rarr;</a>
-                </div>
-              </article>
-
-              <!-- Article 3 -->
-              <article class="article-carte reveal" data-categorie="lifestyle">
-                <div class="article-carte-image">
-                  <img src="images/IMG_0083.webp" alt="Morning routine anti-anxiété — rituels du matin pour apaiser le stress" loading="lazy">
-                </div>
-                <div class="article-carte-contenu">
-                  <span class="article-tag lifestyle">Lifestyle</span>
-                  <span class="article-date">3 février 2026</span>
-                  <h3>Ma morning routine anti-anxiété (testée et approuvée)</h3>
-                  <p>Les petits rituels du matin qui m'aident à démarrer la journée sans boule au ventre.</p>
-                  <a href="#" class="lire-suite">Lire &rarr;</a>
-                </div>
-              </article>
-
-              <!-- Article 4 -->
-              <article class="article-carte reveal" data-categorie="comprendre">
-                <div class="article-carte-image">
-                  <img src="images/IMG_0029.webp" alt="Comprendre les crises d'angoisse et leurs mécanismes — conseils Elise&Mind" loading="lazy">
-                </div>
-                <div class="article-carte-contenu">
-                  <span class="article-tag comprendre">Comprendre</span>
-                  <span class="article-date">28 janvier 2026</span>
-                  <h3>Crise d'angoisse : que se passe-t-il vraiment dans ton corps ?</h3>
-                  <p>Comprendre les mécanismes de la crise pour mieux la gérer et arrêter d'en avoir peur.</p>
-                  <a href="#" class="lire-suite">Lire &rarr;</a>
-                </div>
-              </article>
-
-              <!-- Article 5 -->
-              <article class="article-carte reveal" data-categorie="outils">
-                <div class="article-carte-image">
-                  <img src="images/IMG_0355.webp" alt="Exercice de respiration carrée anti-stress en 4 temps — technique d'apaisement Elise&Mind" loading="lazy">
-                </div>
-                <div class="article-carte-contenu">
-                  <span class="article-tag outils">Boîte à Outils</span>
-                  <span class="article-date">22 janvier 2026</span>
-                  <h3>Respiration carrée : l'exercice qui calme tout en 4 temps</h3>
-                  <p>La technique de respiration préférée des Navy SEALs pour retrouver son calme en situation de stress intense.</p>
-                  <a href="#" class="lire-suite">Lire &rarr;</a>
-                </div>
-              </article>
-
-              <!-- Article 6 -->
-              <article class="article-carte reveal" data-categorie="lifestyle">
-                <div class="article-carte-image">
-                  <img src="images/IMG_2030.webp" alt="Sélection de comptes Instagram bienveillants pour mieux vivre avec l'anxiété" loading="lazy">
-                </div>
-                <div class="article-carte-contenu">
-                  <span class="article-tag lifestyle">Lifestyle</span>
-                  <span class="article-date">15 janvier 2026</span>
-                  <h3>5 comptes Instagram qui m'aident quand ça ne va pas</h3>
-                  <p>Ma sélection de comptes bienveillants qui parlent d'anxiété sans tabou et avec douceur.</p>
-                  <a href="#" class="lire-suite">Lire &rarr;</a>
-                </div>
-              </article>
-
+              <div class="loading-spinner-blog">
+                <div class="spinner-blog"></div>
+                <p>Chargement des articles...</p>
+              </div>
             </div>
+
+            <!-- Pagination -->
+            <div id="blogPagination"></div>
           </div>
 
           <!-- Sidebar -->
@@ -361,6 +219,7 @@
     </div>
   </footer>
 
+  <script src="js/blog.js"></script>
   <script src="js/main.js"></script>
   <script src="js/cookies.js"></script>
 

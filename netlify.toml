@@ -28,3 +28,9 @@
   to = "https://eliseandmind.com/:splat"
   status = 301
   force = true
+
+# Blog articles — SPA-style rewrite pour /blog/[categorie]/[slug]
+[[redirects]]
+  from = "/blog/*"
+  to = "/blog/index.html"
+  status = 200
