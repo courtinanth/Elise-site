@@ -147,6 +147,7 @@ p {
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 14px 32px;
   border-radius: 50px;
@@ -898,6 +899,10 @@ section {
   font-style: normal;
   font-size: 0.9rem;
   color: var(--texte-secondaire);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 /* =============================================
@@ -1024,6 +1029,11 @@ section {
   flex-direction: column;
   gap: 14px;
   max-width: 400px;
+}
+
+.formulaire-ressource .btn {
+  width: 100%;
+  text-align: center;
 }
 
 .formulaire-ressource input {

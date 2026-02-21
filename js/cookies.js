@@ -2,7 +2,7 @@
 
 (function() {
   const COOKIE_NAME = 'eliseandmind_cookie_consent';
-  const COOKIE_DURATION_DAYS = 30;
+  const COOKIE_DURATION_DAYS = 90;
 
   function getCookieConsent() {
     const cookies = document.cookie.split(';');
