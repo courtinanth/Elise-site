@@ -61,12 +61,18 @@
       <nav class="breadcrumb" id="breadcrumb" aria-label="Fil d'Ariane"></nav>
     </div>
 
-    <!-- Article content — filled by JS -->
+    <!-- Article content — filled by JS (or pre-rendered by build script) -->
     <article class="blog-article-page" id="blog-article-content">
       <div class="loading-spinner-blog">
         <div class="spinner-blog"></div>
         <p>Chargement de l'article...</p>
       </div>
+      <noscript>
+        <div class="container" style="padding:60px 20px;text-align:center;max-width:780px;margin:0 auto">
+          <h1 style="font-family:'Playfair Display',serif;margin-bottom:16px">Contenu de l'article</h1>
+          <p style="margin-bottom:24px;line-height:1.6">Le JavaScript est nécessaire pour afficher cet article. Active-le dans ton navigateur ou <a href="/mes-conseils.html">consulte la liste de nos articles</a>.</p>
+        </div>
+      </noscript>
     </article>
 
     <!-- Related articles — filled by JS -->

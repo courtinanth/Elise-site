@@ -1,6 +1,6 @@
 [build]
   publish = "/"
-  command = ""
+  command = "node build-blog.js"
 
 # ===== SECURITY HEADERS (global, inclut les besoins de l'admin) =====
 [[headers]]

@@ -412,8 +412,38 @@ function renderArticleContent(article, collections) {
                     <img src="${article.featured_image}" alt="${escapeHtmlBlog(article.title)}">
                 </div>
             ` : ''}
-            <div class="blog-article-body">
-                ${article.content || ''}
+            <div class="blog-toc-mobile" id="blog-toc-mobile">
+                <nav class="blog-toc-nav" aria-label="Sommaire de l'article">
+                    <h2 class="blog-toc-title" id="blog-toc-mobile-toggle">Sommaire</h2>
+                    <ol class="blog-toc-list" id="blog-toc-list-mobile"></ol>
+                </nav>
+            </div>
+            <div class="blog-article-layout">
+                <aside class="blog-toc" id="blog-toc">
+                    <nav class="blog-toc-nav" aria-label="Sommaire de l'article">
+                        <h2 class="blog-toc-title">Sommaire</h2>
+                        <ol class="blog-toc-list" id="blog-toc-list"></ol>
+                    </nav>
+                </aside>
+                <div class="blog-article-body">
+                    ${article.content || ''}
+                </div>
+                <aside class="blog-sidebar-right" id="blog-sidebar-right">
+                    <div class="blog-sidebar-sticky">
+                        <div class="blog-sidebar-latest" id="blog-sidebar-latest">
+                            <h3 class="blog-sidebar-title">Derniers articles</h3>
+                            <div class="blog-sidebar-articles" id="blog-sidebar-articles"></div>
+                        </div>
+                        <div class="blog-sidebar-cta">
+                            <div class="blog-sidebar-cta-icon">
+                                <img src="/images/favicon.webp" alt="" width="36" height="36">
+                            </div>
+                            <h3>Ta trousse de secours</h3>
+                            <p>Télécharge gratuitement ma Fiche SOS anti-anxiété.</p>
+                            <a href="/ressources.html" class="btn btn-primary btn-small">Télécharger &rarr;</a>
+                        </div>
+                    </div>
+                </aside>
             </div>
         </div>
     `;
@@ -605,7 +635,35 @@ async function loadBlogList() {
 
     if (!grille) return;
 
-    // Afficher un loader
+    const isPrerendered = grille.hasAttribute('data-prerendered');
+    const isInitialLoad = currentBlogPage <= 1 && !currentCollectionSlug;
+
+    // Si pre-rendu et chargement initial (page 1, pas de filtre), garder le contenu
+    // On charge quand meme les filtres et la pagination en arriere-plan
+    if (isPrerendered && isInitialLoad) {
+        // Retirer le flag pour les navigations suivantes
+        grille.removeAttribute('data-prerendered');
+
+        // Charger les collections pour les filtres
+        if (cachedCollections.length === 0) {
+            cachedCollections = await getCollections();
+        }
+        cachedCollections.forEach((col, index) => getCollectionColor(col.slug, index));
+
+        if (filtresContainer) {
+            filtresContainer.innerHTML = renderCollectionFilters(cachedCollections, currentCollectionSlug);
+        }
+
+        // Charger le total pour la pagination
+        const { total } = await getArticles({ limit: ARTICLES_PER_PAGE, page: 1 });
+        const totalPages = Math.ceil(total / ARTICLES_PER_PAGE);
+        if (paginationContainer) {
+            paginationContainer.innerHTML = renderBlogPagination(1, totalPages, '');
+        }
+        return;
+    }
+
+    // Mode dynamique : afficher un loader
     grille.innerHTML = '<div class="loading-spinner-blog"><div class="spinner-blog"></div><p>Chargement...</p></div>';
 
     // Charger les collections si pas en cache
@@ -673,6 +731,8 @@ async function loadArticlePage() {
 
     if (!articleContainer) return;
 
+    const isPrerendered = articleContainer.hasAttribute('data-prerendered');
+
     // Extraire le slug depuis l'URL : /blog/[categorie]/[slug]
     const pathParts = window.location.pathname.split('/').filter(Boolean);
     const blogIndex = pathParts.indexOf('blog');
@@ -684,22 +744,25 @@ async function loadArticlePage() {
     const categorySlug = pathParts.length > blogIndex + 2 ? pathParts[blogIndex + 1] : null;
 
     if (!articleSlug || articleSlug === 'blog') {
-        articleContainer.innerHTML = '<div class="container"><p class="blog-empty">Article introuvable.</p></div>';
+        if (!isPrerendered) {
+            articleContainer.innerHTML = '<div class="container"><p class="blog-empty">Article introuvable.</p></div>';
+        }
         return;
     }
 
-    // Charger l'article
+    // Charger l'article depuis Supabase (necessaire pour les articles associes)
     const article = await getArticleBySlug(articleSlug);
 
     if (!article) {
-        articleContainer.innerHTML = '<div class="container"><p class="blog-empty">Article introuvable.</p></div>';
-        document.title = 'Article introuvable — Elise & Mind';
+        if (!isPrerendered) {
+            articleContainer.innerHTML = '<div class="container"><p class="blog-empty">Article introuvable.</p></div>';
+            document.title = 'Article introuvable — Elise & Mind';
+        }
         return;
     }
 
     // Verifier que la categorie dans l'URL correspond
     if (categorySlug && article.collections?.slug && categorySlug !== article.collections.slug) {
-        // Redirect vers la bonne URL
         window.location.replace(buildArticleUrl(article));
         return;
     }
@@ -710,22 +773,150 @@ async function loadArticlePage() {
         getCollectionColor(col.slug, index);
     });
 
-    // Afficher l'article
-    articleContainer.innerHTML = renderArticleContent(article, collections);
-
-    // Appliquer le SEO
-    applyArticleSeo(article);
-
-    // Breadcrumb
-    if (breadcrumb) {
-        breadcrumb.innerHTML = renderBreadcrumb(article);
+    if (!isPrerendered) {
+        // Mode dynamique (fallback) : generer le HTML
+        articleContainer.innerHTML = renderArticleContent(article, collections);
+        applyArticleSeo(article);
+        if (breadcrumb) {
+            breadcrumb.innerHTML = renderBreadcrumb(article);
+        }
     }
+    // Si pre-rendu, le contenu, les meta et le breadcrumb sont deja dans le HTML
+
+    // Construire le sommaire (ajoute le scroll spy et les handlers de clic)
+    buildTableOfContents();
+
+    // Charger les 3 derniers articles pour la sidebar droite (mise a jour dynamique)
+    loadSidebarLatestArticles(article, collections);
 
     // Charger et afficher les articles associes
     const related = await getRelatedArticles(article, 4);
     if (related.length > 0 && relatedSection && relatedGrid) {
         relatedGrid.innerHTML = related.map(a => renderRelatedCard(a, collections)).join('');
         relatedSection.style.display = '';
+    }
+}
+
+// ==========================================
+// SOMMAIRE (TOC) — Extraction des H2
+// ==========================================
+
+function buildTableOfContents() {
+    const tocList = document.getElementById('blog-toc-list');
+    const tocListMobile = document.getElementById('blog-toc-list-mobile');
+    const articleBody = document.querySelector('.blog-article-body');
+    if (!articleBody) return;
+
+    const headings = articleBody.querySelectorAll('h2');
+    if (headings.length === 0) {
+        // Masquer les sommaires s'il n'y a pas de H2
+        const toc = document.getElementById('blog-toc');
+        const tocMobile = document.getElementById('blog-toc-mobile');
+        if (toc) toc.style.display = 'none';
+        if (tocMobile) tocMobile.style.display = 'none';
+        return;
+    }
+
+    let html = '';
+    headings.forEach((heading, index) => {
+        const id = 'section-' + index;
+        heading.id = id;
+        html += `<li><a href="#${id}" class="blog-toc-link" data-target="${id}">${heading.textContent}</a></li>`;
+    });
+
+    // Remplir le TOC desktop et mobile
+    if (tocList) tocList.innerHTML = html;
+    if (tocListMobile) tocListMobile.innerHTML = html;
+
+    // Scroll spy : surligner le lien actif au scroll (desktop)
+    const allTocLinks = document.querySelectorAll('.blog-toc-link');
+    const observerOptions = {
+        rootMargin: '-100px 0px -60% 0px',
+        threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                allTocLinks.forEach(link => link.classList.remove('active'));
+                document.querySelectorAll(`[data-target="${entry.target.id}"]`).forEach(link => {
+                    link.classList.add('active');
+                });
+            }
+        });
+    }, observerOptions);
+
+    headings.forEach(heading => observer.observe(heading));
+
+    // Smooth scroll au clic (desktop + mobile)
+    allTocLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.getElementById(link.dataset.target);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Toggle mobile TOC
+    const mobileToggle = document.getElementById('blog-toc-mobile-toggle');
+    if (mobileToggle && tocListMobile) {
+        mobileToggle.addEventListener('click', () => {
+            mobileToggle.classList.toggle('open');
+            tocListMobile.classList.toggle('open');
+        });
+    }
+}
+
+// ==========================================
+// SIDEBAR — 3 derniers articles
+// ==========================================
+
+async function loadSidebarLatestArticles(currentArticle, collections) {
+    const container = document.getElementById('blog-sidebar-articles');
+    if (!container) return;
+
+    try {
+        const { data } = await blogSupabase
+            .from('articles')
+            .select('id, title, slug, featured_image, published_at, collection_id, collections(id, name, slug)')
+            .eq('status', 'published')
+            .neq('id', currentArticle.id)
+            .order('published_at', { ascending: false })
+            .limit(3);
+
+        if (!data || data.length === 0) {
+            container.closest('.blog-sidebar-latest').style.display = 'none';
+            return;
+        }
+
+        container.innerHTML = data.map(article => {
+            const url = buildArticleUrl(article);
+            const collectionSlug = article.collections?.slug || '';
+            let colorIndex = 0;
+            if (collections && collectionSlug) {
+                colorIndex = collections.findIndex(c => c.slug === collectionSlug);
+                if (colorIndex < 0) colorIndex = 0;
+            }
+            const badgeColor = getCollectionColor(collectionSlug, colorIndex);
+
+            return `
+                <a href="${url}" class="blog-sidebar-article">
+                    ${article.featured_image
+                        ? `<img src="${article.featured_image}" alt="${escapeHtmlBlog(article.title)}" loading="lazy">`
+                        : ''}
+                    <div class="blog-sidebar-article-info">
+                        ${article.collections?.name
+                            ? `<span class="article-tag article-tag-xs" style="background-color:${badgeColor.bg};color:${badgeColor.text}">${escapeHtmlBlog(article.collections.name)}</span>`
+                            : ''}
+                        <span class="blog-sidebar-article-title">${escapeHtmlBlog(article.title)}</span>
+                    </div>
+                </a>
+            `;
+        }).join('');
+    } catch (err) {
+        console.error('Erreur chargement sidebar articles:', err);
     }
 }
 

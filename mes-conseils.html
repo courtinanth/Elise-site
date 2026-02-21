@@ -148,12 +148,15 @@
               <button class="filtre-btn active" data-filtre="tous">Tous</button>
             </div>
 
-            <!-- Grille d'articles — remplie par JS depuis Supabase -->
+            <!-- Grille d'articles — remplie par JS depuis Supabase (ou pre-rendue par build) -->
             <div class="blog-grille" id="blogGrille">
               <div class="loading-spinner-blog">
                 <div class="spinner-blog"></div>
                 <p>Chargement des articles...</p>
               </div>
+              <noscript>
+                <p style="text-align:center;padding:40px 20px;line-height:1.6">Le JavaScript est nécessaire pour afficher les articles. Active-le dans ton navigateur pour accéder au contenu.</p>
+              </noscript>
             </div>
 
             <!-- Pagination -->
