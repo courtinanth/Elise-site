@@ -22,12 +22,20 @@
   }
 
   function loadTrackingScripts() {
-    // Ajouter ici Google Analytics ou tout autre script de tracking
-    // Exemple :
-    // var script = document.createElement('script');
-    // script.src = 'https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID';
-    // document.head.appendChild(script);
-    console.log('Cookies acceptés — scripts de tracking chargés.');
+    // Google Analytics 4 (GA4)
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-9WM4RH25EY';
+    document.head.appendChild(script);
+
+    script.onload = function() {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9WM4RH25EY');
+    };
+
+    console.log('Cookies acceptés — Google Analytics chargé.');
   }
 
   function removeTrackingCookies() {
