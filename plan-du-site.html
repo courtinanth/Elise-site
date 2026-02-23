@@ -5,31 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO -->
-  <title>Mentions Légales | Elise&Mind</title>
-  <meta name="description" content="Mentions légales du site Elise&Mind. Informations sur l'éditrice, l'hébergement, la propriété intellectuelle et la responsabilité.">
+  <title>Plan du Site | Elise&Mind</title>
+  <meta name="description" content="Plan du site Elise&Mind. Retrouvez toutes les pages et articles du site pour naviguer facilement.">
   <meta name="robots" content="noindex, follow">
-  <link rel="canonical" href="https://eliseandmind.com/mentions-legales">
+  <link rel="canonical" href="https://eliseandmind.com/plan-du-site">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Mentions Légales | Elise&Mind">
-  <meta property="og:url" content="https://eliseandmind.com/mentions-legales">
+  <meta property="og:title" content="Plan du Site | Elise&Mind">
+  <meta property="og:url" content="https://eliseandmind.com/plan-du-site">
   <meta property="og:site_name" content="Elise&Mind">
   <meta property="og:locale" content="fr_FR">
-
-  <!-- Structured Data: WebPage -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Mentions Légales | Elise&Mind",
-    "url": "https://eliseandmind.com/mentions-legales",
-    "description": "Mentions légales du site Elise&Mind. Informations sur l'éditrice, l'hébergement, la propriété intellectuelle et la responsabilité.",
-    "inLanguage": "fr",
-    "isPartOf": { "@id": "https://eliseandmind.com/#website" },
-    "publisher": { "@id": "https://eliseandmind.com/#organization" }
-  }
-  </script>
 
   <!-- Structured Data: BreadcrumbList -->
   <script type="application/ld+json">
@@ -46,8 +32,8 @@
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "Mentions Légales",
-        "item": "https://eliseandmind.com/mentions-legales"
+        "name": "Plan du Site",
+        "item": "https://eliseandmind.com/plan-du-site"
       }
     ]
   }
@@ -60,6 +46,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Sacramento&display=swap">
 
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 </head>
 <body>
 
@@ -99,43 +86,41 @@
         <span class="etoile star-icon star-deco"><svg viewBox="0 0 36 36" fill="none"><path d="M18 2l1.2 7.2L26 12l-6.8 2.8L18 22l-1.2-7.2L10 12l6.8-2.8L18 2Z" fill="currentColor"/><path d="M28 8l.6 3.6L32 13l-3.4 1.4L28 18l-.6-3.6L24 13l3.4-1.4L28 8Z" fill="currentColor" opacity="0.7"/><path d="M10 20l.5 2.8L13 24.5l-2.5 1.2L10 28.5l-.5-2.8L7 24.5l2.5-1.2L10 20Z" fill="currentColor" opacity="0.5"/></svg></span>
       </div>
       <div class="container">
-        <h1 class="reveal">Mentions Légales</h1>
+        <h1 class="reveal">Plan du Site</h1>
       </div>
     </section>
 
-    <section aria-label="Contenu des mentions légales">
+    <section aria-label="Plan du site">
       <div class="legal-contenu reveal">
 
-        <h2>Éditeur du site</h2>
-        <p>Le site <strong>Elise&Mind</strong> est édité par :</p>
-        <p>Nom : Élise Brillouet<br>
-        Email : <a href="mailto:contact@eliseandmind.com">contact@eliseandmind.com</a></p>
+        <div class="sitemap-section">
+          <h2>Pages principales</h2>
+          <ul class="sitemap-list">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="mon-histoire.html">Mon Histoire</a></li>
+            <li><a href="mes-conseils.html">Mes Conseils</a></li>
+            <li><a href="ressources.html">Ressources</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
 
-        <h2>Directrice de la publication</h2>
-        <p>Élise Brillouet</p>
+        <div class="sitemap-section">
+          <h2>Informations</h2>
+          <ul class="sitemap-list">
+            <li><a href="mentions-legales.html">Mentions Légales</a></li>
+            <li><a href="politique-confidentialite.html">Politique de Confidentialité</a></li>
+          </ul>
+        </div>
 
-        <h2>Hébergement</h2>
-        <p>Ce site est hébergé par : <strong>Netlify, Inc.</strong><br>
-        Adresse : 512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis<br>
-        Site web : <a href="https://www.netlify.com" target="_blank" rel="noopener">www.netlify.com</a></p>
+        <div class="sitemap-section" id="sitemap-articles">
+          <h2>Articles</h2>
+          <div id="sitemap-articles-content">
+            <noscript>
+              <p>Activez JavaScript pour voir la liste des articles.</p>
+            </noscript>
+          </div>
+        </div>
 
-        <h2>Propriété intellectuelle</h2>
-        <p>&copy; 2026 Elise&Mind. Tous les contenus sont protégés.</p>
-        <p>L'ensemble du contenu de ce site (textes, images, illustrations, photographies, graphismes, logo, icônes, mise en page) est la propriété exclusive de l'éditrice, sauf mention contraire. Toute reproduction, distribution, modification, adaptation, retransmission ou publication de ces contenus, même partielle, est strictement interdite sans autorisation préalable écrite de l'éditrice.</p>
-
-        <h2>Limitation de responsabilité</h2>
-        <p>Les informations et contenus partagés sur le site Elise&Mind sont donnés à <strong>titre informatif uniquement</strong> et ne remplacent en aucun cas un avis médical professionnel, un diagnostic ou un traitement. L'éditrice ne saurait être tenue responsable de l'utilisation qui pourrait être faite de ces informations.</p>
-        <p>Si vous êtes en situation d'urgence ou de détresse, contactez le <strong>15</strong> (SAMU) ou le <strong>3114</strong> (numéro national de prévention du suicide).</p>
-        <p>L'éditrice s'efforce de maintenir des informations exactes et à jour, mais ne garantit pas l'exhaustivité ni l'exactitude des contenus du site. Elle décline toute responsabilité en cas de dommage résultant d'une information erronée ou d'une indisponibilité du site.</p>
-
-        <h2>Liens hypertextes</h2>
-        <p>Le site Elise&Mind peut contenir des liens vers des sites tiers. L'éditrice n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.</p>
-
-        <h2>Données personnelles</h2>
-        <p>Pour en savoir plus sur la collecte et le traitement de vos données personnelles, consultez notre <a href="politique-confidentialite.html">Politique de Confidentialité</a>.</p>
-
-        <h2>Contact</h2>
-        <p>Pour toute question relative au site ou à ces mentions légales, vous pouvez nous contacter à : <a href="mailto:contact@eliseandmind.com">contact@eliseandmind.com</a></p>
       </div>
     </section>
   </main>
@@ -203,5 +188,86 @@
 
   <script src="js/main.js" defer></script>
   <script src="js/cookies.js" defer></script>
+  <script>
+  // ==========================================
+  // PLAN DU SITE — Chargement dynamique des articles
+  // ==========================================
+  document.addEventListener('DOMContentLoaded', async () => {
+      const container = document.getElementById('sitemap-articles-content');
+      if (!container || !window.supabase) return;
+
+      // Verifier si le contenu est pre-rendu
+      if (container.hasAttribute('data-prerendered')) return;
+
+      const SUPABASE_URL = 'https://fnihtzsynbpcvbztwsku.supabase.co';
+      const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuaWh0enN5bmJwY3ZienR3c2t1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NDI1NTIsImV4cCI6MjA4NzIxODU1Mn0.vl0Z_Jg8x4vkawxXaW0m2EzuaZdSsQMo-flzH7rxy6c';
+
+      try {
+          const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+          // Charger collections et articles
+          const [collectionsRes, articlesRes] = await Promise.all([
+              client.from('collections').select('id, name, slug').order('created_at', { ascending: true }),
+              client.from('articles').select('id, title, slug, published_at, collection_id, collections(id, name, slug)').eq('status', 'published').order('published_at', { ascending: false })
+          ]);
+
+          const collections = collectionsRes.data || [];
+          const articles = articlesRes.data || [];
+
+          if (articles.length === 0) {
+              container.innerHTML = '<p>Aucun article pour le moment.</p>';
+              return;
+          }
+
+          // Grouper les articles par collection
+          const grouped = {};
+          const uncategorized = [];
+
+          articles.forEach(article => {
+              const colSlug = article.collections?.slug;
+              const colName = article.collections?.name;
+              if (colSlug && colName) {
+                  if (!grouped[colSlug]) {
+                      grouped[colSlug] = { name: colName, articles: [] };
+                  }
+                  grouped[colSlug].articles.push(article);
+              } else {
+                  uncategorized.push(article);
+              }
+          });
+
+          let html = '';
+
+          // Afficher par collection dans l'ordre des collections
+          collections.forEach(col => {
+              if (grouped[col.slug] && grouped[col.slug].articles.length > 0) {
+                  html += '<h3>' + col.name + '</h3>';
+                  html += '<ul class="sitemap-list">';
+                  grouped[col.slug].articles.forEach(article => {
+                      const url = '/blog/' + col.slug + '/' + article.slug;
+                      html += '<li><a href="' + url + '">' + article.title + '</a></li>';
+                  });
+                  html += '</ul>';
+              }
+          });
+
+          // Articles sans collection
+          if (uncategorized.length > 0) {
+              html += '<h3>Autres articles</h3>';
+              html += '<ul class="sitemap-list">';
+              uncategorized.forEach(article => {
+                  const url = '/blog/blog/' + article.slug;
+                  html += '<li><a href="' + url + '">' + article.title + '</a></li>';
+              });
+              html += '</ul>';
+          }
+
+          container.innerHTML = html;
+      } catch (err) {
+          console.error('Erreur chargement plan du site:', err);
+          container.innerHTML = '<p>Impossible de charger les articles.</p>';
+      }
+  });
+  </script>
 </body>
 </html>

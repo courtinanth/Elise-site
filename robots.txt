@@ -1,9 +1,10 @@
 User-agent: *
 Allow: /
 
-# Bloquer les pages légales (non indexées)
+# Bloquer les pages légales et utilitaires (non indexées)
 Disallow: /mentions-legales
 Disallow: /politique-confidentialite
+Disallow: /plan-du-site
 
 # Bloquer le backoffice admin (aucun crawl)
 Disallow: /admin/

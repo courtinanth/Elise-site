@@ -280,6 +280,121 @@ function generateArticlePage(template, article, collections, allArticles) {
 }
 
 // ==========================================
+// GENERATION SITEMAPS XML (segmentes)
+// ==========================================
+
+function escapeXml(text) {
+    if (!text) return '';
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+}
+
+function generateSitemapIndex(today) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${SITE_URL}/sitemap-pages.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${SITE_URL}/sitemap-articles.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+</sitemapindex>`;
+}
+
+function generateSitemapPages(today) {
+    const pages = [
+        { loc: '/', changefreq: 'weekly', priority: '1.0' },
+        { loc: '/mon-histoire', changefreq: 'monthly', priority: '0.8' },
+        { loc: '/mes-conseils', changefreq: 'weekly', priority: '0.9' },
+        { loc: '/ressources', changefreq: 'monthly', priority: '0.8' },
+        { loc: '/contact', changefreq: 'monthly', priority: '0.6' },
+        { loc: '/plan-du-site', changefreq: 'weekly', priority: '0.3' },
+    ];
+
+    const urls = pages.map(p => `  <url>
+    <loc>${SITE_URL}${p.loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join('\n');
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`;
+}
+
+function generateSitemapArticles(articles) {
+    const urls = articles.map(article => {
+        const articleUrl = `${SITE_URL}${buildArticleUrl(article)}`;
+        const lastmod = (article.updated_at || article.published_at || '').split('T')[0];
+        return `  <url>
+    <loc>${escapeXml(articleUrl)}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+    }).join('\n');
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`;
+}
+
+// ==========================================
+// PRE-RENDU PLAN DU SITE
+// ==========================================
+
+function generatePlanDuSiteContent(articles, collections) {
+    // Grouper par collection
+    const grouped = {};
+    const uncategorized = [];
+
+    articles.forEach(article => {
+        const colSlug = article.collections?.slug;
+        const colName = article.collections?.name;
+        if (colSlug && colName) {
+            if (!grouped[colSlug]) {
+                grouped[colSlug] = { name: colName, articles: [] };
+            }
+            grouped[colSlug].articles.push(article);
+        } else {
+            uncategorized.push(article);
+        }
+    });
+
+    let html = '';
+
+    // Afficher par collection dans l'ordre
+    collections.forEach(col => {
+        if (grouped[col.slug] && grouped[col.slug].articles.length > 0) {
+            html += `\n            <h3>${escapeHtml(col.name)}</h3>`;
+            html += `\n            <ul class="sitemap-list">`;
+            grouped[col.slug].articles.forEach(article => {
+                const url = buildArticleUrl(article);
+                html += `\n              <li><a href="${url}">${escapeHtml(article.title)}</a></li>`;
+            });
+            html += `\n            </ul>`;
+        }
+    });
+
+    // Articles sans collection
+    if (uncategorized.length > 0) {
+        html += `\n            <h3>Autres articles</h3>`;
+        html += `\n            <ul class="sitemap-list">`;
+        uncategorized.forEach(article => {
+            const url = buildArticleUrl(article);
+            html += `\n              <li><a href="${url}">${escapeHtml(article.title)}</a></li>`;
+        });
+        html += `\n            </ul>`;
+    }
+
+    return html;
+}
+
+// ==========================================
 // GENERATION HTML — CARTES ARTICLES (liste)
 // ==========================================
 
@@ -329,8 +444,22 @@ async function main() {
     const articles = await fetchArticles();
     console.log(`  ${articles.length} article(s) publie(s)\n`);
 
+    // Generer les sitemaps meme sans articles
+    const today = new Date().toISOString().split('T')[0];
+
     if (articles.length === 0) {
-        console.log('Aucun article a generer.');
+        console.log('Aucun article a generer.\n');
+
+        // Generer les sitemaps XML (pages uniquement)
+        console.log('Generation des sitemaps XML...');
+        fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), generateSitemapIndex(today), 'utf-8');
+        console.log('  sitemap.xml (index)');
+        fs.writeFileSync(path.join(ROOT, 'sitemap-pages.xml'), generateSitemapPages(today), 'utf-8');
+        console.log('  sitemap-pages.xml (pages principales)');
+        fs.writeFileSync(path.join(ROOT, 'sitemap-articles.xml'), generateSitemapArticles([]), 'utf-8');
+        console.log('  sitemap-articles.xml (0 article)');
+
+        console.log('\n=== Build termine avec succes ===');
         return;
     }
 
@@ -390,6 +519,39 @@ async function main() {
 
     fs.writeFileSync(listPath, listHtml, 'utf-8');
     console.log(`  ${firstPageArticles.length} carte(s) pre-rendues dans mes-conseils.html`);
+
+    // 5. Pre-rendre le plan du site
+    console.log('\nPre-rendu du plan du site (plan-du-site.html)...');
+    const planPath = path.join(ROOT, 'plan-du-site.html');
+    if (fs.existsSync(planPath)) {
+        let planHtml = fs.readFileSync(planPath, 'utf-8');
+        const articlesContent = generatePlanDuSiteContent(articles, collections);
+
+        // Remplacer le contenu dynamique par le contenu pre-rendu
+        planHtml = planHtml.replace(
+            /<div id="sitemap-articles-content">[\s\S]*?<\/div>/,
+            `<div id="sitemap-articles-content" data-prerendered="true">${articlesContent}\n          </div>`
+        );
+
+        fs.writeFileSync(planPath, planHtml, 'utf-8');
+        console.log(`  ${articles.length} article(s) pre-rendu(s) dans plan-du-site.html`);
+    }
+
+    // 6. Generer les sitemaps XML segmentes
+    console.log('\nGeneration des sitemaps XML...');
+
+    // Sitemap index
+    fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), generateSitemapIndex(today), 'utf-8');
+    console.log('  sitemap.xml (index)');
+
+    // Sitemap pages core
+    fs.writeFileSync(path.join(ROOT, 'sitemap-pages.xml'), generateSitemapPages(today), 'utf-8');
+    console.log('  sitemap-pages.xml (pages principales)');
+
+    // Sitemap articles
+    const indexableArticles = articles.filter(a => a.is_indexed !== false);
+    fs.writeFileSync(path.join(ROOT, 'sitemap-articles.xml'), generateSitemapArticles(indexableArticles), 'utf-8');
+    console.log(`  sitemap-articles.xml (${indexableArticles.length} article(s))`);
 
     console.log('\n=== Build termine avec succes ===');
 }
