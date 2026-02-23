@@ -122,6 +122,7 @@
   <link rel="preload" as="image" href="images/A7401755.webp" type="image/webp">
 
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 </head>
 <body>
 
@@ -256,42 +257,17 @@
           <span class="wave-separator" aria-hidden="true"><svg viewBox="0 0 100 12" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0 6 Q25 0, 50 6 T100 6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></span>
         </div>
 
-        <div class="articles-grille">
-          <article class="article-carte reveal-scale">
-            <div class="article-carte-image">
-              <img src="images/IMG_0038.webp" alt="Article sur la différence entre anxiété et stress — Blog Elise&Mind" loading="lazy" width="400" height="300">
-            </div>
-            <div class="article-carte-contenu">
-              <span class="article-tag comprendre">Comprendre</span>
-              <h3>Anxiété vs Stress : quelle est vraiment la différence ?</h3>
-              <p>Découvre pourquoi ces deux termes ne veulent pas dire la même chose, et comment les distinguer au quotidien.</p>
-              <a href="mes-conseils.html" class="lire-suite">Lire la suite &rarr;</a>
-            </div>
-          </article>
+        <div class="articles-grille" id="homepageArticles">
+          <!-- Pre-rendu par build-blog.js — les 3 derniers articles publiés -->
+          <noscript>
+            <p style="text-align:center;grid-column:1/-1;">
+              <a href="mes-conseils.html">Découvrir tous mes conseils &rarr;</a>
+            </p>
+          </noscript>
+        </div>
 
-          <article class="article-carte reveal-scale">
-            <div class="article-carte-image">
-              <img src="images/IMG_0165.webp" alt="Technique d'ancrage 5-4-3-2-1 pour calmer l'anxiété rapidement — Elise&Mind" loading="lazy" width="400" height="300">
-            </div>
-            <div class="article-carte-contenu">
-              <span class="article-tag outils">Boîte à Outils</span>
-              <h3>La technique 5-4-3-2-1 : ton ancrage en 2 minutes</h3>
-              <p>Un exercice simple et rapide pour te reconnecter au moment présent quand l'anxiété monte.</p>
-              <a href="mes-conseils.html" class="lire-suite">Lire la suite &rarr;</a>
-            </div>
-          </article>
-
-          <article class="article-carte reveal-scale">
-            <div class="article-carte-image">
-              <img src="images/IMG_0083.webp" alt="Morning routine anti-anxiété — rituels du matin pour apaiser le stress par Elise&Mind" loading="lazy" width="400" height="300">
-            </div>
-            <div class="article-carte-contenu">
-              <span class="article-tag lifestyle">Lifestyle</span>
-              <h3>Ma morning routine anti-anxiété (testée et approuvée)</h3>
-              <p>Les petits rituels du matin qui m'aident à démarrer la journée sans boule au ventre.</p>
-              <a href="mes-conseils.html" class="lire-suite">Lire la suite &rarr;</a>
-            </div>
-          </article>
+        <div class="text-center reveal" style="margin-top: 32px;">
+          <a href="mes-conseils.html" class="btn btn-small btn-outline">Voir tous mes conseils &rarr;</a>
         </div>
       </div>
     </section>
@@ -392,6 +368,7 @@
   </div>
 
   <script src="js/main.js" defer></script>
+  <script src="js/blog.js" defer></script>
   <script src="js/cookies.js" defer></script>
 </body>
 </html>

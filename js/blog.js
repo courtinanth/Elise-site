@@ -932,6 +932,72 @@ function escapeHtmlBlog(text) {
 }
 
 // ==========================================
+// HOMEPAGE — 3 DERNIERS ARTICLES
+// ==========================================
+
+async function loadHomepageArticles() {
+    const container = document.getElementById('homepageArticles');
+    if (!container) return;
+
+    // Si deja pre-rendu par le build, ne rien faire
+    if (container.hasAttribute('data-prerendered')) return;
+
+    try {
+        const collections = await getCollections();
+        collections.forEach((col, index) => getCollectionColor(col.slug, index));
+
+        const { articles } = await getArticles({ limit: 3, page: 1 });
+
+        if (articles.length === 0) return;
+
+        container.innerHTML = articles.map(article => {
+            const collectionName = article.collections?.name || '';
+            const collectionSlug = article.collections?.slug || '';
+            const articleUrl = buildArticleUrl(article);
+
+            let colorIndex = 0;
+            if (collections && collectionSlug) {
+                colorIndex = collections.findIndex(c => c.slug === collectionSlug);
+                if (colorIndex < 0) colorIndex = 0;
+            }
+            const badgeColor = getCollectionColor(collectionSlug, colorIndex);
+
+            const image = article.featured_image
+                ? `<img src="${article.featured_image}" alt="${escapeHtmlBlog(article.title)}" loading="lazy" width="400" height="300">`
+                : '';
+
+            const badgeHtml = collectionName
+                ? `<span class="article-tag" style="background-color:${badgeColor.bg};color:${badgeColor.text}">${escapeHtmlBlog(collectionName)}</span>`
+                : '';
+
+            return `
+                <article class="article-carte reveal-scale">
+                    ${image ? `<a href="${articleUrl}" class="article-carte-image">${image}</a>` : ''}
+                    <div class="article-carte-contenu">
+                        ${badgeHtml}
+                        <h3><a href="${articleUrl}">${escapeHtmlBlog(article.title)}</a></h3>
+                        ${article.excerpt ? `<p>${escapeHtmlBlog(article.excerpt)}</p>` : ''}
+                        <a href="${articleUrl}" class="lire-suite">Lire la suite &rarr;</a>
+                    </div>
+                </article>
+            `;
+        }).join('');
+
+        // Declencher les animations reveal-scale
+        requestAnimationFrame(() => {
+            const cartes = container.querySelectorAll('.article-carte.reveal-scale');
+            let delay = 0;
+            cartes.forEach(carte => {
+                setTimeout(() => carte.classList.add('visible'), delay);
+                delay += 120;
+            });
+        });
+    } catch (err) {
+        console.error('Erreur chargement articles homepage:', err);
+    }
+}
+
+// ==========================================
 // INITIALISATION AUTOMATIQUE
 // ==========================================
 
@@ -940,6 +1006,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Supabase client non disponible');
         return;
     }
+
+    // Homepage — 3 derniers articles
+    await loadHomepageArticles();
 
     // Page liste d'articles (mes-conseils.html)
     const blogGrille = document.getElementById('blogGrille');

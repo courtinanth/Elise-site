@@ -395,6 +395,38 @@ function generatePlanDuSiteContent(articles, collections) {
 }
 
 // ==========================================
+// GENERATION HTML — CARTES HOMEPAGE (3 derniers)
+// ==========================================
+
+function generateHomepageCards(articles, collections) {
+    return articles.map(article => {
+        const collectionName = article.collections?.name || '';
+        const collectionSlug = article.collections?.slug || '';
+        const articleUrl = buildArticleUrl(article);
+        const badgeColor = getCollectionColor(collections, collectionSlug);
+
+        const image = article.featured_image
+            ? `<img src="${article.featured_image}" alt="${escapeHtml(article.title)}" loading="lazy" width="400" height="300">`
+            : '';
+
+        const badgeHtml = collectionName
+            ? `<span class="article-tag" style="background-color:${badgeColor.bg};color:${badgeColor.text}">${escapeHtml(collectionName)}</span>`
+            : '';
+
+        return `
+          <article class="article-carte reveal-scale">
+              ${image ? `<a href="${articleUrl}" class="article-carte-image">${image}</a>` : ''}
+              <div class="article-carte-contenu">
+                  ${badgeHtml}
+                  <h3><a href="${articleUrl}">${escapeHtml(article.title)}</a></h3>
+                  ${article.excerpt ? `<p>${escapeHtml(article.excerpt)}</p>` : ''}
+                  <a href="${articleUrl}" class="lire-suite">Lire la suite &rarr;</a>
+              </div>
+          </article>`;
+    }).join('\n');
+}
+
+// ==========================================
 // GENERATION HTML — CARTES ARTICLES (liste)
 // ==========================================
 
@@ -520,7 +552,47 @@ async function main() {
     fs.writeFileSync(listPath, listHtml, 'utf-8');
     console.log(`  ${firstPageArticles.length} carte(s) pre-rendues dans mes-conseils.html`);
 
-    // 5. Pre-rendre le plan du site
+    // 5. Pre-rendre les 3 derniers articles sur la homepage
+    console.log('\nPre-rendu des derniers articles (index.html)...');
+    const indexPath = path.join(ROOT, 'index.html');
+    let indexHtml = fs.readFileSync(indexPath, 'utf-8');
+
+    const latestForHomepage = articles.slice(0, 3);
+    const homepageCardsHtml = generateHomepageCards(latestForHomepage, collections);
+
+    // Remplacer le contenu du homepageArticles
+    const hpGrilleStart = indexHtml.indexOf('<div class="articles-grille" id="homepageArticles">');
+    if (hpGrilleStart !== -1) {
+        // Trouver la fermeture </div> correspondante
+        const hpOpenTagEnd = indexHtml.indexOf('>', hpGrilleStart) + 1;
+        // Chercher le </div> de fermeture apres le noscript
+        let depth = 1;
+        let pos = hpOpenTagEnd;
+        while (depth > 0 && pos < indexHtml.length) {
+            const nextOpen = indexHtml.indexOf('<div', pos);
+            const nextClose = indexHtml.indexOf('</div>', pos);
+            if (nextClose === -1) break;
+            if (nextOpen !== -1 && nextOpen < nextClose) {
+                depth++;
+                pos = nextOpen + 4;
+            } else {
+                depth--;
+                if (depth === 0) {
+                    const before = indexHtml.substring(0, hpGrilleStart);
+                    const after = indexHtml.substring(nextClose + '</div>'.length);
+                    indexHtml = before +
+                        `<div class="articles-grille" id="homepageArticles" data-prerendered="true">\n${homepageCardsHtml}\n        </div>` +
+                        after;
+                }
+                pos = nextClose + 6;
+            }
+        }
+    }
+
+    fs.writeFileSync(indexPath, indexHtml, 'utf-8');
+    console.log(`  ${latestForHomepage.length} carte(s) pre-rendues dans index.html`);
+
+    // 6. Pre-rendre le plan du site
     console.log('\nPre-rendu du plan du site (plan-du-site.html)...');
     const planPath = path.join(ROOT, 'plan-du-site.html');
     if (fs.existsSync(planPath)) {
@@ -537,7 +609,7 @@ async function main() {
         console.log(`  ${articles.length} article(s) pre-rendu(s) dans plan-du-site.html`);
     }
 
-    // 6. Generer les sitemaps XML segmentes
+    // 7. Generer les sitemaps XML segmentes
     console.log('\nGeneration des sitemaps XML...');
 
     // Sitemap index
