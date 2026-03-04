@@ -838,6 +838,12 @@ section {
   height: 350px;
 }
 
+.story-image .image-placeholder.portrait {
+  height: 480px;
+  width: 75%;
+  margin: 0 auto;
+}
+
 /* Bloc centré (mission) */
 .story-center {
   text-align: center;
