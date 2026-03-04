@@ -811,6 +811,15 @@ section {
   direction: ltr;
 }
 
+.h2-icone {
+  width: 0.85em;
+  height: 0.85em;
+  vertical-align: -0.1em;
+  margin-left: 6px;
+  color: var(--accent-dore);
+  display: inline-block;
+}
+
 .story-texte h3 {
   font-family: var(--font-sous-titre);
   font-size: 1.4rem;
