@@ -405,10 +405,12 @@ function renderArticleContent(article, collections) {
                     ? `<a href="/mes-conseils?collection=${collectionSlug}" class="article-tag" style="background-color:${badgeColor.bg};color:${badgeColor.text}">${escapeHtmlBlog(collectionName)}</a>`
                     : ''}
                 <h1>${escapeHtmlBlog(article.title)}</h1>
-                <time datetime="${article.published_at}">${date}</time>
-                <div class="blog-author-meta">
-                    <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-meta-img">
-                    <span>Par <strong>Elise</strong></span>
+                <div class="blog-author-date-row">
+                    <time datetime="${article.published_at}">${date}</time>
+                    <div class="blog-author-meta">
+                        <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-meta-img">
+                        <span>Par <strong>Elise</strong></span>
+                    </div>
                 </div>
             </header>
             ${article.featured_image ? `
@@ -1025,15 +1027,15 @@ async function loadComments(articleId) {
     if (!listContainer) return;
 
     try {
+        // Load all visible comments (approved + admin replies)
         const { data, error } = await blogSupabase
             .from('comments')
-            .select('id, author_name, content, created_at')
+            .select('id, author_name, content, created_at, reply_to, is_admin_reply')
             .eq('article_id', articleId)
-            .eq('approved', true)
-            .order('created_at', { ascending: false });
+            .or('approved.eq.true,is_admin_reply.eq.true')
+            .order('created_at', { ascending: true });
 
         if (error) {
-            // Table doesn't exist yet or other error — show empty state
             listContainer.innerHTML = '<p class="blog-comments-empty">Sois la première à laisser un commentaire !</p>';
             return;
         }
@@ -1043,11 +1045,29 @@ async function loadComments(articleId) {
             return;
         }
 
-        listContainer.innerHTML = data.map(comment => {
+        // Separate top-level comments and replies
+        const topLevel = data.filter(c => !c.reply_to && !c.is_admin_reply);
+        const repliesByParent = {};
+        data.filter(c => c.reply_to).forEach(r => {
+            if (!repliesByParent[r.reply_to]) repliesByParent[r.reply_to] = [];
+            repliesByParent[r.reply_to].push(r);
+        });
+
+        // Sort top-level by newest first
+        topLevel.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+        if (topLevel.length === 0) {
+            listContainer.innerHTML = '<p class="blog-comments-empty">Sois la première à laisser un commentaire !</p>';
+            return;
+        }
+
+        listContainer.innerHTML = topLevel.map(comment => {
             const initial = (comment.author_name || 'A').charAt(0).toUpperCase();
             const commentDate = new Date(comment.created_at).toLocaleDateString('fr-FR', {
                 day: 'numeric', month: 'long', year: 'numeric'
             });
+            const replies = repliesByParent[comment.id] || [];
+
             return `
                 <div class="blog-comment-item">
                     <div class="blog-comment-item-header">
@@ -1056,6 +1076,25 @@ async function loadComments(articleId) {
                         <span class="blog-comment-date">${commentDate}</span>
                     </div>
                     <p class="blog-comment-text">${escapeHtmlBlog(comment.content)}</p>
+                    ${replies.length > 0 ? `
+                        <div class="blog-comment-replies">
+                            ${replies.map(reply => {
+                                const replyDate = new Date(reply.created_at).toLocaleDateString('fr-FR', {
+                                    day: 'numeric', month: 'long', year: 'numeric'
+                                });
+                                return `
+                                    <div class="blog-comment-reply">
+                                        <div class="blog-comment-reply-header">
+                                            <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-comment-reply-avatar">
+                                            <span class="blog-comment-reply-author">Elise <span class="blog-comment-reply-badge">(auteur)</span></span>
+                                            <span class="blog-comment-date">${replyDate}</span>
+                                        </div>
+                                        <p class="blog-comment-text">${escapeHtmlBlog(reply.content)}</p>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    ` : ''}
                 </div>
             `;
         }).join('');
@@ -1069,8 +1108,19 @@ function initCommentForm(articleId) {
     const successMsg = document.getElementById('blog-comment-success');
     if (!form) return;
 
+    let lastSubmitTime = 0;
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Anti-spam : honeypot
+        const honeypot = form.querySelector('[name="website"]');
+        if (honeypot && honeypot.value) return;
+
+        // Anti-spam : rate limit (30s entre chaque soumission)
+        const now = Date.now();
+        if (now - lastSubmitTime < 30000) return;
+
         const submitBtn = form.querySelector('.blog-comment-submit');
         const nameInput = form.querySelector('[name="comment-name"]');
         const emailInput = form.querySelector('[name="comment-email"]');
@@ -1080,7 +1130,10 @@ function initCommentForm(articleId) {
         const email = emailInput.value.trim();
         const text = textInput.value.trim();
 
-        if (!name || !text) return;
+        if (!name || !email || !text) return;
+
+        // Anti-spam : longueur minimale
+        if (text.length < 5 || name.length < 2) return;
 
         submitBtn.disabled = true;
         submitBtn.textContent = 'Envoi...';
@@ -1098,6 +1151,7 @@ function initCommentForm(articleId) {
 
             if (error) throw error;
 
+            lastSubmitTime = Date.now();
             form.reset();
             if (successMsg) {
                 successMsg.style.display = 'block';

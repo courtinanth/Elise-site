@@ -111,6 +111,9 @@ async function processLogin(session) {
     document.getElementById('user-email').textContent = email;
     showView('admin');
 
+    // Charger le badge commentaires en attente
+    loadPendingCommentsCount();
+
     // Router vers la bonne page
     if (!window.location.hash || window.location.hash === '#' || window.location.hash.includes('access_token')) {
         window.location.hash = '#dashboard';
@@ -177,6 +180,9 @@ function handleRoute() {
             break;
         case 'collections':
             renderCollections();
+            break;
+        case 'comments':
+            renderComments();
             break;
         case 'media':
             renderMedia();
@@ -251,16 +257,18 @@ async function renderDashboard() {
 
     try {
         // Charger les statistiques en parallèle
-        const [totalRes, publishedRes, draftRes, recentRes] = await Promise.all([
+        const [totalRes, publishedRes, draftRes, pendingCommentsRes, recentRes] = await Promise.all([
             supabase.from('articles').select('id', { count: 'exact', head: true }),
             supabase.from('articles').select('id', { count: 'exact', head: true }).eq('status', 'published'),
             supabase.from('articles').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
+            supabase.from('comments').select('id', { count: 'exact', head: true }).eq('approved', false).eq('is_admin_reply', false),
             supabase.from('articles').select('id, title, status, updated_at, slug, collections(slug)').order('updated_at', { ascending: false }).limit(5)
         ]);
 
         const totalCount = totalRes.count || 0;
         const publishedCount = publishedRes.count || 0;
         const draftCount = draftRes.count || 0;
+        const pendingCommentsCount = pendingCommentsRes.count || 0;
         const recentArticles = recentRes.data || [];
 
         main.innerHTML = `
@@ -280,6 +288,11 @@ async function renderDashboard() {
                 <div class="stat-card">
                     <div class="stat-value">${draftCount}</div>
                     <div class="stat-label">Brouillons</div>
+                </div>
+                <div class="stat-card ${pendingCommentsCount > 0 ? 'stat-card-alert' : ''}">
+                    <div class="stat-value">${pendingCommentsCount}</div>
+                    <div class="stat-label">Commentaires en attente</div>
+                    ${pendingCommentsCount > 0 ? '<a href="#comments" class="stat-link">Voir &rarr;</a>' : ''}
                 </div>
             </div>
 
@@ -919,6 +932,290 @@ async function confirmDeleteMedia(id, filename) {
             }
         }
     );
+}
+
+// ==========================================
+// VUE : COMMENTAIRES
+// ==========================================
+
+let commentsFilter = 'pending'; // 'pending' | 'approved' | 'all'
+let commentsPage = 1;
+const COMMENTS_PER_PAGE = 20;
+
+async function renderComments() {
+    const main = document.getElementById('main-content');
+    main.innerHTML = '<div class="loading-spinner"><div class="spinner"></div> Chargement...</div>';
+
+    main.innerHTML = `
+        <div class="page-header">
+            <h1>Commentaires</h1>
+        </div>
+
+        <div class="comments-tabs">
+            <button class="comments-tab ${commentsFilter === 'pending' ? 'active' : ''}" onclick="setCommentsFilter('pending')">
+                En attente <span id="tab-pending-count" class="comments-tab-count">0</span>
+            </button>
+            <button class="comments-tab ${commentsFilter === 'approved' ? 'active' : ''}" onclick="setCommentsFilter('approved')">
+                Approuves <span id="tab-approved-count" class="comments-tab-count">0</span>
+            </button>
+            <button class="comments-tab ${commentsFilter === 'all' ? 'active' : ''}" onclick="setCommentsFilter('all')">
+                Tous
+            </button>
+        </div>
+
+        <div id="comments-list-container">
+            <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+
+        <div id="comments-pagination"></div>
+    `;
+
+    await loadCommentsView();
+}
+
+function setCommentsFilter(filter) {
+    commentsFilter = filter;
+    commentsPage = 1;
+    renderComments();
+}
+
+async function loadCommentsView() {
+    const container = document.getElementById('comments-list-container');
+    const paginationDiv = document.getElementById('comments-pagination');
+    if (!container) return;
+
+    // Load counts for tabs
+    const [pendingRes, approvedRes] = await Promise.all([
+        supabase.from('comments').select('id', { count: 'exact', head: true }).eq('approved', false).eq('is_admin_reply', false),
+        supabase.from('comments').select('id', { count: 'exact', head: true }).eq('approved', true).eq('is_admin_reply', false)
+    ]);
+
+    const pendingCount = pendingRes.count || 0;
+    const approvedCount = approvedRes.count || 0;
+
+    const tabPending = document.getElementById('tab-pending-count');
+    const tabApproved = document.getElementById('tab-approved-count');
+    if (tabPending) tabPending.textContent = pendingCount;
+    if (tabApproved) tabApproved.textContent = approvedCount;
+
+    // Update sidebar badge
+    updateCommentsBadge(pendingCount);
+
+    try {
+        let query = supabase
+            .from('comments')
+            .select('id, article_id, author_name, author_email, content, approved, is_admin_reply, reply_to, created_at, articles(title, slug, collections(slug))', { count: 'exact' })
+            .is('reply_to', null) // Only top-level comments
+            .eq('is_admin_reply', false);
+
+        if (commentsFilter === 'pending') query = query.eq('approved', false);
+        if (commentsFilter === 'approved') query = query.eq('approved', true);
+
+        const from = (commentsPage - 1) * COMMENTS_PER_PAGE;
+        const to = from + COMMENTS_PER_PAGE - 1;
+
+        const { data: comments, count, error } = await query
+            .order('created_at', { ascending: false })
+            .range(from, to);
+
+        if (error) throw error;
+
+        if (!comments || comments.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">&#x1F4AC;</div>
+                    <p>${commentsFilter === 'pending' ? 'Aucun commentaire en attente' : 'Aucun commentaire'}</p>
+                </div>
+            `;
+            paginationDiv.innerHTML = '';
+            return;
+        }
+
+        // Load existing replies for these comments
+        const commentIds = comments.map(c => c.id);
+        const { data: replies } = await supabase
+            .from('comments')
+            .select('id, reply_to, author_name, content, created_at, is_admin_reply')
+            .in('reply_to', commentIds)
+            .order('created_at', { ascending: true });
+
+        const repliesByComment = {};
+        if (replies) {
+            replies.forEach(r => {
+                if (!repliesByComment[r.reply_to]) repliesByComment[r.reply_to] = [];
+                repliesByComment[r.reply_to].push(r);
+            });
+        }
+
+        container.innerHTML = comments.map(c => {
+            const commentDate = formatDate(c.created_at);
+            const articleTitle = c.articles?.title || 'Article inconnu';
+            const articleSlug = c.articles?.slug || '';
+            const collectionSlug = c.articles?.collections?.slug || '';
+            const articleUrl = collectionSlug && articleSlug ? `/blog/${collectionSlug}/${articleSlug}/` : '#';
+            const commentReplies = repliesByComment[c.id] || [];
+
+            return `
+                <div class="comment-card" id="comment-${c.id}">
+                    <div class="comment-card-header">
+                        <div class="comment-card-author">
+                            <div class="comment-card-avatar">${(c.author_name || 'A').charAt(0).toUpperCase()}</div>
+                            <div>
+                                <strong>${escapeHtml(c.author_name)}</strong>
+                                <span class="comment-card-email">${escapeHtml(c.author_email)}</span>
+                            </div>
+                        </div>
+                        <span class="comment-card-date">${commentDate}</span>
+                    </div>
+                    <div class="comment-card-article">
+                        Sur : <a href="${articleUrl}" target="_blank">${escapeHtml(articleTitle)}</a>
+                    </div>
+                    <div class="comment-card-content">${escapeHtml(c.content)}</div>
+                    ${commentReplies.length > 0 ? `
+                        <div class="comment-card-replies">
+                            ${commentReplies.map(r => `
+                                <div class="comment-reply-item">
+                                    <div class="comment-reply-header">
+                                        <img src="/images/IMG_5605.jpeg" alt="Elise" class="comment-reply-avatar-img">
+                                        <strong>Elise</strong> <span class="comment-reply-badge">auteur</span>
+                                        <span class="comment-reply-date">${formatDate(r.created_at)}</span>
+                                    </div>
+                                    <p class="comment-reply-text">${escapeHtml(r.content)}</p>
+                                    <button class="btn-icon danger btn-sm" onclick="confirmDeleteComment('${r.id}')" title="Supprimer la reponse">&#128465;</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="comment-card-actions">
+                        ${!c.approved ? `<button class="btn btn-sm btn-primary" onclick="approveComment('${c.id}')">&#10004; Approuver</button>` : ''}
+                        ${c.approved ? `<span class="badge badge-published">Approuve</span>` : `<span class="badge badge-draft">En attente</span>`}
+                        <button class="btn btn-sm btn-outline" onclick="showReplyForm('${c.id}', '${c.article_id}')">&#8617; Repondre</button>
+                        <button class="btn btn-sm btn-danger-outline" onclick="confirmDeleteComment('${c.id}')">&#128465; Supprimer</button>
+                    </div>
+                    <div class="comment-reply-form-container" id="reply-form-${c.id}" style="display:none">
+                        <textarea id="reply-text-${c.id}" class="form-textarea" rows="3" placeholder="Repondre en tant qu'Elise..."></textarea>
+                        <div class="comment-reply-form-actions">
+                            <button class="btn btn-sm btn-outline" onclick="hideReplyForm('${c.id}')">Annuler</button>
+                            <button class="btn btn-sm btn-primary" onclick="submitReply('${c.id}', '${c.article_id}')">Envoyer la reponse</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Pagination
+        const totalPages = Math.ceil(count / COMMENTS_PER_PAGE);
+        if (totalPages > 1) {
+            paginationDiv.innerHTML = renderPagination(commentsPage, totalPages, 'goToCommentsPage');
+        } else {
+            paginationDiv.innerHTML = '';
+        }
+    } catch (err) {
+        console.error('Erreur chargement commentaires:', err);
+        container.innerHTML = '<div class="empty-state"><p>Erreur lors du chargement des commentaires</p></div>';
+    }
+}
+
+function goToCommentsPage(page) {
+    commentsPage = page;
+    loadCommentsView();
+    document.getElementById('main-content').scrollTop = 0;
+}
+
+async function approveComment(commentId) {
+    try {
+        const { error } = await supabase
+            .from('comments')
+            .update({ approved: true })
+            .eq('id', commentId);
+        if (error) throw error;
+        showToast('Commentaire approuve', 'success');
+        loadCommentsView();
+    } catch (err) {
+        console.error('Erreur approbation:', err);
+        showToast('Erreur lors de l\'approbation', 'error');
+    }
+}
+
+async function confirmDeleteComment(commentId) {
+    showConfirm(
+        'Etes-vous sur de vouloir supprimer ce commentaire ? Cette action est irreversible.',
+        async () => {
+            try {
+                const { error } = await supabase.from('comments').delete().eq('id', commentId);
+                if (error) throw error;
+                showToast('Commentaire supprime', 'success');
+                loadCommentsView();
+            } catch (err) {
+                console.error('Erreur suppression commentaire:', err);
+                showToast('Erreur lors de la suppression', 'error');
+            }
+        }
+    );
+}
+
+function showReplyForm(commentId) {
+    const form = document.getElementById(`reply-form-${commentId}`);
+    if (form) form.style.display = 'block';
+}
+
+function hideReplyForm(commentId) {
+    const form = document.getElementById(`reply-form-${commentId}`);
+    if (form) form.style.display = 'none';
+}
+
+async function submitReply(commentId, articleId) {
+    const textarea = document.getElementById(`reply-text-${commentId}`);
+    const content = textarea?.value?.trim();
+
+    if (!content || content.length < 2) {
+        showToast('La reponse est trop courte', 'warning');
+        return;
+    }
+
+    try {
+        const { error } = await supabase
+            .from('comments')
+            .insert({
+                article_id: articleId,
+                author_name: 'Elise',
+                author_email: currentUser.email,
+                content: content,
+                approved: true,
+                is_admin_reply: true,
+                reply_to: commentId
+            });
+
+        if (error) throw error;
+        showToast('Reponse publiee', 'success');
+        hideReplyForm(commentId);
+        loadCommentsView();
+    } catch (err) {
+        console.error('Erreur envoi reponse:', err);
+        showToast('Erreur lors de l\'envoi de la reponse', 'error');
+    }
+}
+
+async function updateCommentsBadge(count) {
+    const badge = document.getElementById('nav-comments-badge');
+    if (!badge) return;
+    if (count > 0) {
+        badge.textContent = count;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+async function loadPendingCommentsCount() {
+    try {
+        const { count } = await supabase
+            .from('comments')
+            .select('id', { count: 'exact', head: true })
+            .eq('approved', false)
+            .eq('is_admin_reply', false);
+        updateCommentsBadge(count || 0);
+    } catch (e) { /* silently ignore */ }
 }
 
 // ==========================================

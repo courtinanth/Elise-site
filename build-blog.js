@@ -170,10 +170,12 @@ function generateArticlePage(template, article, collections, allArticles) {
                     ? `<a href="/mes-conseils?collection=${collectionSlug}" class="article-tag" style="background-color:${badgeColor.bg};color:${badgeColor.text}">${escapeHtml(collectionName)}</a>`
                     : ''}
                 <h1>${escapeHtml(article.title)}</h1>
-                <time datetime="${article.published_at}">${date}</time>
-                <div class="blog-author-meta">
-                    <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-meta-img">
-                    <span>Par <strong>Elise</strong></span>
+                <div class="blog-author-date-row">
+                    <time datetime="${article.published_at}">${date}</time>
+                    <div class="blog-author-meta">
+                        <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-meta-img">
+                        <span>Par <strong>Elise</strong></span>
+                    </div>
                 </div>
             </header>
             ${article.featured_image ? `

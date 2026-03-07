@@ -1239,7 +1239,240 @@ h4 { font-size: 1.1rem; font-weight: 600; }
     cursor: not-allowed;
 }
 
-/* === 19. UTILITAIRES === */
+/* === 19. COMMENTAIRES === */
+.comments-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: 0;
+}
+
+.comments-tab {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comments-tab:hover {
+    color: var(--primary);
+}
+
+.comments-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--secondary);
+    font-weight: 600;
+}
+
+.comments-tab-count {
+    background: var(--border-light);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.comments-tab.active .comments-tab-count {
+    background: var(--secondary-light);
+    color: var(--primary);
+}
+
+.comment-card {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.comment-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.comment-card-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.comment-card-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--secondary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.comment-card-author strong {
+    display: block;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.comment-card-email {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.comment-card-date {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.comment-card-article {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    padding-left: 50px;
+}
+
+.comment-card-article a {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.comment-card-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    padding: 14px 16px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    margin-bottom: 14px;
+    border-left: 3px solid var(--border);
+}
+
+.comment-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.comment-card-replies {
+    margin: 14px 0 14px 24px;
+    padding-left: 16px;
+    border-left: 2px solid var(--secondary-light);
+}
+
+.comment-reply-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.comment-reply-item:last-child {
+    border-bottom: none;
+}
+
+.comment-reply-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.comment-reply-avatar-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-reply-badge {
+    background: var(--secondary-light);
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.comment-reply-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: auto;
+}
+
+.comment-reply-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.comment-reply-form-container {
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+}
+
+.comment-reply-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* Nav badge for pending comments */
+.nav-badge {
+    background: var(--danger);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-left: auto;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* Dashboard stat card alert */
+.stat-card-alert {
+    border-left-color: var(--danger);
+}
+
+.stat-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--secondary);
+    font-weight: 500;
+}
+
+.stat-link:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+/* === 20. UTILITAIRES === */
 .hidden {
     display: none !important;
 }

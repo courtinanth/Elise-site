@@ -81,10 +81,12 @@
             <header class="blog-article-header">
                 <a href="/mes-conseils?collection=comprendre-anxiete" class="article-tag" style="background-color:#E8D5C4;color:#6B4A2E">Comprendre l'anxiété</a>
                 <h1>Pensées intrusives : pourquoi ton cerveau te fait ça (et tu n'es pas folle)</h1>
-                <time datetime="2026-03-07T09:46:20.758+00:00">7 mars 2026</time>
-                <div class="blog-author-meta">
-                    <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-meta-img">
-                    <span>Par <strong>Elise</strong></span>
+                <div class="blog-author-date-row">
+                    <time datetime="2026-03-07T09:46:20.758+00:00">7 mars 2026</time>
+                    <div class="blog-author-meta">
+                        <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-meta-img">
+                        <span>Par <strong>Elise</strong></span>
+                    </div>
                 </div>
             </header>
             
@@ -203,10 +205,13 @@
       <div class="blog-comment-success" id="blog-comment-success">Merci pour ton commentaire ! Il sera visible après validation.</div>
       <form class="blog-comment-form" id="blog-comment-form">
         <div class="blog-comment-form-row">
-          <input type="text" name="comment-name" placeholder="Ton prénom" required>
-          <input type="email" name="comment-email" placeholder="Ton email (facultatif)">
+          <input type="text" name="comment-name" placeholder="Ton prénom *" required>
+          <input type="email" name="comment-email" placeholder="Ton email *" required>
         </div>
-        <textarea name="comment-text" placeholder="Laisse ton commentaire ici..." required></textarea>
+        <textarea name="comment-text" placeholder="Laisse ton commentaire ici... *" required></textarea>
+        <!-- Honeypot anti-spam -->
+        <input type="text" name="website" class="blog-comment-hp" tabindex="-1" autocomplete="off">
+        <p class="blog-comment-rgpd">Ton email ne sera jamais partagé ni affiché publiquement. Il est uniquement utilisé pour te recontacter si nécessaire. <a href="/politique-confidentialite.html">Politique de confidentialité</a>.</p>
         <button type="submit" class="blog-comment-submit">Publier</button>
       </form>
       <div class="blog-comments-list" id="blog-comments-list"></div>

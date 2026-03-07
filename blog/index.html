@@ -86,10 +86,13 @@
       <div class="blog-comment-success" id="blog-comment-success">Merci pour ton commentaire ! Il sera visible après validation.</div>
       <form class="blog-comment-form" id="blog-comment-form">
         <div class="blog-comment-form-row">
-          <input type="text" name="comment-name" placeholder="Ton prénom" required>
-          <input type="email" name="comment-email" placeholder="Ton email (facultatif)">
+          <input type="text" name="comment-name" placeholder="Ton prénom *" required>
+          <input type="email" name="comment-email" placeholder="Ton email *" required>
         </div>
-        <textarea name="comment-text" placeholder="Laisse ton commentaire ici..." required></textarea>
+        <textarea name="comment-text" placeholder="Laisse ton commentaire ici... *" required></textarea>
+        <!-- Honeypot anti-spam -->
+        <input type="text" name="website" class="blog-comment-hp" tabindex="-1" autocomplete="off">
+        <p class="blog-comment-rgpd">Ton email ne sera jamais partagé ni affiché publiquement. Il est uniquement utilisé pour te recontacter si nécessaire. <a href="/politique-confidentialite.html">Politique de confidentialité</a>.</p>
         <button type="submit" class="blog-comment-submit">Publier</button>
       </form>
       <div class="blog-comments-list" id="blog-comments-list"></div>

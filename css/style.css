@@ -2842,6 +2842,15 @@ section {
   color: var(--texte-secondaire);
 }
 
+.blog-article-header .blog-author-date-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .blog-article-image {
   max-width: 900px;
   margin: 0 auto 40px;
@@ -3384,7 +3393,6 @@ section {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-top: 14px;
 }
 
 .blog-author-meta-img {
@@ -3612,6 +3620,72 @@ section {
   color: var(--texte-secondaire);
   font-style: italic;
   font-size: 0.92rem;
+}
+
+/* Replies inside comments */
+.blog-comment-replies {
+  margin-top: 16px;
+  margin-left: 20px;
+  padding-left: 16px;
+  border-left: 2px solid var(--fond-accent);
+}
+
+.blog-comment-reply {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--fond-secondaire);
+}
+
+.blog-comment-reply:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.blog-comment-reply-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.blog-comment-reply-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.blog-comment-reply-author {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--texte-principal);
+}
+
+.blog-comment-reply-badge {
+  font-weight: 500;
+  font-size: 0.78rem;
+  color: var(--accent-dore);
+}
+
+.blog-comment-rgpd {
+  font-size: 0.78rem;
+  color: var(--texte-secondaire);
+  line-height: 1.5;
+}
+
+.blog-comment-rgpd a {
+  color: var(--lien);
+  text-decoration: underline;
+}
+
+/* Honeypot anti-spam — hidden field */
+.blog-comment-hp {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  pointer-events: none;
 }
 
 .blog-comment-success {
