@@ -3487,7 +3487,7 @@ section {
 .blog-comments-section {
   max-width: 780px;
   margin: 60px auto 0;
-  padding: 0 20px;
+  padding: 0 20px 80px;
 }
 
 .blog-comments-section h2 {
