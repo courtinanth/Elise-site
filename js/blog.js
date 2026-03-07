@@ -1108,18 +1108,43 @@ function initCommentForm(articleId) {
     const successMsg = document.getElementById('blog-comment-success');
     if (!form) return;
 
+    // Creer le conteneur de message d'erreur (dynamiquement)
+    let errorMsg = document.getElementById('blog-comment-error');
+    if (!errorMsg) {
+        errorMsg = document.createElement('div');
+        errorMsg.id = 'blog-comment-error';
+        errorMsg.className = 'blog-comment-error';
+        errorMsg.style.display = 'none';
+        form.insertBefore(errorMsg, form.firstChild);
+    }
+
+    function showError(message) {
+        errorMsg.textContent = message;
+        errorMsg.style.display = 'block';
+        // Scroller vers le message d'erreur
+        errorMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => { errorMsg.style.display = 'none'; }, 6000);
+    }
+
     let lastSubmitTime = 0;
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Anti-spam : honeypot
+        // Masquer tout message precedent
+        errorMsg.style.display = 'none';
+        if (successMsg) successMsg.style.display = 'none';
+
+        // Anti-spam : honeypot (silencieux pour les bots)
         const honeypot = form.querySelector('[name="website"]');
         if (honeypot && honeypot.value) return;
 
         // Anti-spam : rate limit (30s entre chaque soumission)
         const now = Date.now();
-        if (now - lastSubmitTime < 30000) return;
+        if (now - lastSubmitTime < 30000) {
+            showError('Merci de patienter quelques secondes avant de soumettre un nouveau commentaire.');
+            return;
+        }
 
         const submitBtn = form.querySelector('.blog-comment-submit');
         const nameInput = form.querySelector('[name="comment-name"]');
@@ -1130,10 +1155,30 @@ function initCommentForm(articleId) {
         const email = emailInput.value.trim();
         const text = textInput.value.trim();
 
-        if (!name || !email || !text) return;
+        // Validation des champs obligatoires
+        if (!name || !email || !text) {
+            showError('Merci de remplir tous les champs obligatoires.');
+            return;
+        }
 
-        // Anti-spam : longueur minimale
-        if (text.length < 5 || name.length < 2) return;
+        // Validation email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError('Merci d\'entrer une adresse email valide.');
+            return;
+        }
+
+        // Validation longueur prenom
+        if (name.length < 2) {
+            showError('Ton prénom doit contenir au moins 2 caractères.');
+            return;
+        }
+
+        // Anti-spam : longueur minimale du commentaire
+        if (text.length < 3) {
+            showError('Ton commentaire doit contenir au moins 3 caractères.');
+            return;
+        }
 
         submitBtn.disabled = true;
         submitBtn.textContent = 'Envoi...';
@@ -1155,10 +1200,12 @@ function initCommentForm(articleId) {
             form.reset();
             if (successMsg) {
                 successMsg.style.display = 'block';
-                setTimeout(() => { successMsg.style.display = 'none'; }, 5000);
+                successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                setTimeout(() => { successMsg.style.display = 'none'; }, 6000);
             }
         } catch (err) {
             console.error('Erreur envoi commentaire:', err);
+            showError('Une erreur est survenue lors de l\'envoi. Merci de réessayer.');
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Publier';
