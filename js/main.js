@@ -505,4 +505,38 @@ document.addEventListener('DOMContentLoaded', () => {
     separateurs.forEach(sep => sepObserver.observe(sep));
   }
 
+  /* -----------------------------------------
+     18. LIENS EXTERNES — OUVERTURE NOUVEL ONGLET
+     Tous les liens pointant vers un domaine
+     externe s'ouvrent automatiquement dans
+     un nouvel onglet avec rel="noopener".
+     Utilise un MutationObserver pour couvrir
+     aussi les liens ajoutés dynamiquement (blog).
+     ----------------------------------------- */
+  function markExternalLinks(root) {
+    root.querySelectorAll('a[href]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && (href.startsWith('http://') || href.startsWith('https://')) && !href.includes(window.location.hostname)) {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
+  }
+
+  // Traiter les liens déjà présents
+  markExternalLinks(document);
+
+  // Observer les liens ajoutés dynamiquement
+  const linkObserver = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === 1) {
+          if (node.tagName === 'A') markExternalLinks(node.parentElement || document);
+          else if (node.querySelectorAll) markExternalLinks(node);
+        }
+      });
+    });
+  });
+  linkObserver.observe(document.body, { childList: true, subtree: true });
+
 });

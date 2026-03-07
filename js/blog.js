@@ -406,6 +406,10 @@ function renderArticleContent(article, collections) {
                     : ''}
                 <h1>${escapeHtmlBlog(article.title)}</h1>
                 <time datetime="${article.published_at}">${date}</time>
+                <div class="blog-author-meta">
+                    <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-meta-img">
+                    <span>Par <strong>Elise</strong></span>
+                </div>
             </header>
             ${article.featured_image ? `
                 <div class="blog-article-image">
@@ -444,6 +448,14 @@ function renderArticleContent(article, collections) {
                         </div>
                     </div>
                 </aside>
+            </div>
+            <div class="blog-author-box">
+                <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-box-img">
+                <div class="blog-author-box-info">
+                    <h3>Elise</h3>
+                    <p>Créatrice d'Elise&Mind, je partage mes conseils et mon vécu pour t'aider à mieux comprendre et apaiser ton anxiété au quotidien.</p>
+                    <a href="/mon-histoire.html" class="blog-author-box-link">En savoir plus &rarr;</a>
+                </div>
             </div>
         </div>
     `;
@@ -789,6 +801,13 @@ async function loadArticlePage() {
     // Charger les 3 derniers articles pour la sidebar droite (mise a jour dynamique)
     loadSidebarLatestArticles(article, collections);
 
+    // Charger les commentaires et initialiser le formulaire
+    loadComments(article.id);
+    initCommentForm(article.id);
+
+    // Charger les derniers articles en bas de page
+    loadLatestArticlesBottom(article, collections);
+
     // Charger et afficher les articles associes
     const related = await getRelatedArticles(article, 4);
     if (related.length > 0 && relatedSection && relatedGrid) {
@@ -994,6 +1013,133 @@ async function loadHomepageArticles() {
         });
     } catch (err) {
         console.error('Erreur chargement articles homepage:', err);
+    }
+}
+
+// ==========================================
+// COMMENTAIRES
+// ==========================================
+
+async function loadComments(articleId) {
+    const listContainer = document.getElementById('blog-comments-list');
+    if (!listContainer) return;
+
+    try {
+        const { data, error } = await blogSupabase
+            .from('comments')
+            .select('id, author_name, content, created_at')
+            .eq('article_id', articleId)
+            .eq('approved', true)
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            // Table doesn't exist yet or other error — show empty state
+            listContainer.innerHTML = '<p class="blog-comments-empty">Sois la première à laisser un commentaire !</p>';
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            listContainer.innerHTML = '<p class="blog-comments-empty">Sois la première à laisser un commentaire !</p>';
+            return;
+        }
+
+        listContainer.innerHTML = data.map(comment => {
+            const initial = (comment.author_name || 'A').charAt(0).toUpperCase();
+            const commentDate = new Date(comment.created_at).toLocaleDateString('fr-FR', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+            return `
+                <div class="blog-comment-item">
+                    <div class="blog-comment-item-header">
+                        <div class="blog-comment-avatar">${initial}</div>
+                        <span class="blog-comment-author">${escapeHtmlBlog(comment.author_name)}</span>
+                        <span class="blog-comment-date">${commentDate}</span>
+                    </div>
+                    <p class="blog-comment-text">${escapeHtmlBlog(comment.content)}</p>
+                </div>
+            `;
+        }).join('');
+    } catch (err) {
+        listContainer.innerHTML = '<p class="blog-comments-empty">Sois la première à laisser un commentaire !</p>';
+    }
+}
+
+function initCommentForm(articleId) {
+    const form = document.getElementById('blog-comment-form');
+    const successMsg = document.getElementById('blog-comment-success');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = form.querySelector('.blog-comment-submit');
+        const nameInput = form.querySelector('[name="comment-name"]');
+        const emailInput = form.querySelector('[name="comment-email"]');
+        const textInput = form.querySelector('[name="comment-text"]');
+
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const text = textInput.value.trim();
+
+        if (!name || !text) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Envoi...';
+
+        try {
+            const { error } = await blogSupabase
+                .from('comments')
+                .insert({
+                    article_id: articleId,
+                    author_name: name,
+                    author_email: email,
+                    content: text,
+                    approved: false
+                });
+
+            if (error) throw error;
+
+            form.reset();
+            if (successMsg) {
+                successMsg.style.display = 'block';
+                setTimeout(() => { successMsg.style.display = 'none'; }, 5000);
+            }
+        } catch (err) {
+            console.error('Erreur envoi commentaire:', err);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Publier';
+        }
+    });
+}
+
+// ==========================================
+// DERNIERS ARTICLES (bas de page)
+// ==========================================
+
+async function loadLatestArticlesBottom(currentArticle, collections) {
+    const grid = document.getElementById('blog-latest-bottom-grid');
+    const section = document.getElementById('blog-latest-bottom');
+    if (!grid || !section) return;
+
+    try {
+        const { data } = await blogSupabase
+            .from('articles')
+            .select('id, title, slug, excerpt, featured_image, published_at, collection_id, collections(id, name, slug)')
+            .eq('status', 'published')
+            .neq('id', currentArticle.id)
+            .order('published_at', { ascending: false })
+            .limit(3);
+
+        if (!data || data.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        grid.innerHTML = data.map(article => renderRelatedCard(article, collections)).join('');
+        section.style.display = '';
+    } catch (err) {
+        console.error('Erreur chargement derniers articles:', err);
+        section.style.display = 'none';
     }
 }
 

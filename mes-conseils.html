@@ -155,14 +155,18 @@
             </div>
 
             <!-- Grille d'articles — remplie par JS depuis Supabase (ou pre-rendue par build) -->
-            <div class="blog-grille" id="blogGrille">
-              <div class="loading-spinner-blog">
-                <div class="spinner-blog"></div>
-                <p>Chargement des articles...</p>
-              </div>
-              <noscript>
-                <p style="text-align:center;padding:40px 20px;line-height:1.6">Le JavaScript est nécessaire pour afficher les articles. Active-le dans ton navigateur pour accéder au contenu.</p>
-              </noscript>
+            <div class="blog-grille" id="blogGrille" data-prerendered="true">
+
+            <article class="article-carte reveal visible" data-categorie="comprendre-anxiete">
+                <a href="/blog/comprendre-anxiete/pensees-intrusives-anxiete" class="article-carte-image"><img src="https://fnihtzsynbpcvbztwsku.supabase.co/storage/v1/object/public/media/featured-1772637178186-56z6va.png" alt="Pensées intrusives : pourquoi ton cerveau te fait ça (et tu n'es pas folle)" loading="lazy"></a>
+                <div class="article-carte-contenu">
+                    <span class="article-tag" style="background-color:#E8D5C4;color:#6B4A2E">Comprendre l'anxiété</span>
+                    <span class="article-date">7 mars 2026</span>
+                    <h3><a href="/blog/comprendre-anxiete/pensees-intrusives-anxiete">Pensées intrusives : pourquoi ton cerveau te fait ça (et tu n'es pas folle)</a></h3>
+                    <p>Ces pensées horribles qui arrivent sans prévenir… Tu n'es pas folle, promis. C'est ton cerveau anxieux qui parle. Et ce soir, on va comprendre pourquoi et comment arrêter de les croire.</p>
+                    <a href="/blog/comprendre-anxiete/pensees-intrusives-anxiete" class="lire-suite">Lire &rarr;</a>
+                </div>
+            </article>
             </div>
 
             <!-- Pagination -->

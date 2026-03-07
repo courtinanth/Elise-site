@@ -171,6 +171,10 @@ function generateArticlePage(template, article, collections, allArticles) {
                     : ''}
                 <h1>${escapeHtml(article.title)}</h1>
                 <time datetime="${article.published_at}">${date}</time>
+                <div class="blog-author-meta">
+                    <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-meta-img">
+                    <span>Par <strong>Elise</strong></span>
+                </div>
             </header>
             ${article.featured_image ? `
             <div class="blog-article-image">
@@ -215,6 +219,14 @@ function generateArticlePage(template, article, collections, allArticles) {
                         </div>
                     </div>
                 </aside>
+            </div>
+            <div class="blog-author-box">
+                <img src="/images/IMG_5605.jpeg" alt="Elise" class="blog-author-box-img">
+                <div class="blog-author-box-info">
+                    <h3>Elise</h3>
+                    <p>Créatrice d'Elise&Mind, je partage mes conseils et mon vécu pour t'aider à mieux comprendre et apaiser ton anxiété au quotidien.</p>
+                    <a href="/mon-histoire.html" class="blog-author-box-link">En savoir plus &rarr;</a>
+                </div>
             </div>
         </div>`;
 
@@ -275,6 +287,45 @@ function generateArticlePage(template, article, collections, allArticles) {
         /<article class="blog-article-page" id="blog-article-content">[\s\S]*?<\/article>/,
         `<article class="blog-article-page" id="blog-article-content" data-prerendered="true">${articleHtml}</article>`
     );
+
+    // Pre-render latest articles bottom section
+    const latestForBottom = allArticles
+        .filter(a => a.id !== article.id)
+        .slice(0, 3);
+
+    if (latestForBottom.length > 0) {
+        const latestCardsHtml = latestForBottom.map(a => {
+            const aDate = formatDate(a.published_at);
+            const aColName = a.collections?.name || '';
+            const aColSlug = a.collections?.slug || '';
+            const aUrl = buildArticleUrl(a);
+            const aColor = getCollectionColor(collections, aColSlug);
+            const aImage = a.featured_image
+                ? `<img src="${a.featured_image}" alt="${escapeHtml(a.title)}" loading="lazy">`
+                : '';
+
+            return `
+                <article class="related-card">
+                    ${aImage ? `<a href="${aUrl}" class="related-card-image">${aImage}</a>` : ''}
+                    <div class="related-card-content">
+                        ${aColName
+                            ? `<span class="article-tag article-tag-sm" style="background-color:${aColor.bg};color:${aColor.text}">${escapeHtml(aColName)}</span>`
+                            : ''}
+                        <h3><a href="${aUrl}">${escapeHtml(a.title)}</a></h3>
+                        <time datetime="${a.published_at}">${aDate}</time>
+                    </div>
+                </article>`;
+        }).join('');
+
+        html = html.replace(
+            /<section class="blog-latest-bottom" id="blog-latest-bottom" style="display:none">/,
+            `<section class="blog-latest-bottom" id="blog-latest-bottom">`
+        );
+        html = html.replace(
+            /<div class="blog-latest-bottom-grid" id="blog-latest-bottom-grid"><\/div>/,
+            `<div class="blog-latest-bottom-grid" id="blog-latest-bottom-grid">${latestCardsHtml}</div>`
+        );
+    }
 
     return html;
 }
