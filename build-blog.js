@@ -82,7 +82,7 @@ function formatDate(dateStr) {
 
 function buildArticleUrl(article) {
     const collectionSlug = article.collections?.slug || 'blog';
-    return `/blog/${collectionSlug}/${article.slug}`;
+    return `/blog/${collectionSlug}/${article.slug}/`;
 }
 
 // Extraire les H2 du contenu HTML et ajouter des IDs
@@ -217,7 +217,7 @@ function generateArticlePage(template, article, collections, allArticles) {
                             </div>
                             <h3>Ta trousse de secours</h3>
                             <p>Télécharge gratuitement ma Fiche SOS anti-anxiété.</p>
-                            <a href="/ressources.html" class="btn btn-primary btn-small">Télécharger &rarr;</a>
+                            <a href="/ressources" class="btn btn-primary btn-small">Télécharger &rarr;</a>
                         </div>
                     </div>
                 </aside>
@@ -227,7 +227,7 @@ function generateArticlePage(template, article, collections, allArticles) {
                 <div class="blog-author-box-info">
                     <h3>Elise</h3>
                     <p>Créatrice d'Elise&Mind, je partage mes conseils et mon vécu pour t'aider à mieux comprendre et apaiser ton anxiété au quotidien.</p>
-                    <a href="/mon-histoire.html" class="blog-author-box-link">En savoir plus &rarr;</a>
+                    <a href="/mon-histoire" class="blog-author-box-link">En savoir plus &rarr;</a>
                 </div>
             </div>
         </div>`;
