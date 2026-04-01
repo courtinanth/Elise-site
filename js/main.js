@@ -517,6 +517,8 @@ document.addEventListener('DOMContentLoaded', () => {
     root.querySelectorAll('a[href]').forEach(link => {
       const href = link.getAttribute('href');
       if (href && (href.startsWith('http://') || href.startsWith('https://')) && !href.includes(window.location.hostname)) {
+        // Ne pas ouvrir en nouvel onglet les liens dans le contenu des articles
+        if (link.closest('.blog-article-body')) return;
         link.setAttribute('target', '_blank');
         link.setAttribute('rel', 'noopener noreferrer');
       }
