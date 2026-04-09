@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://eliseandmind.com/blog/comprendre-anxiete/pensees-intrusives-anxiete</loc>
-    <lastmod>2026-03-07</lastmod>
+    <loc>https://eliseandmind.com/blog/comprendre-anxiete/derealisation-anxiete/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://eliseandmind.com/blog/boite-a-outils/crise-angoisse-nuit/</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://eliseandmind.com/blog/anxiete-au-quotidien/anxiete-sociale-comment-sortir/</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://eliseandmind.com/blog/comprendre-anxiete/pensees-intrusives-anxiete/</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

@@ -588,7 +588,11 @@ async function main() {
 
     // Remplacer le contenu du blogGrille (spinner + noscript → cartes pre-rendues)
     // On repere le bloc entre l'ouverture de blogGrille et le commentaire Pagination
-    const grilleStart = listHtml.indexOf('<div class="blog-grille" id="blogGrille">');
+    // Chercher le div avec ou sans data-prerendered (apres un build precedent)
+    let grilleStart = listHtml.indexOf('<div class="blog-grille" id="blogGrille">');
+    if (grilleStart === -1) {
+        grilleStart = listHtml.indexOf('<div class="blog-grille" id="blogGrille" data-prerendered="true">');
+    }
     const paginationComment = listHtml.indexOf('<!-- Pagination -->', grilleStart);
     if (grilleStart !== -1 && paginationComment !== -1) {
         // Trouver le </div> qui ferme blogGrille (juste avant le commentaire pagination)
@@ -614,7 +618,11 @@ async function main() {
     const homepageCardsHtml = generateHomepageCards(latestForHomepage, collections);
 
     // Remplacer le contenu du homepageArticles
-    const hpGrilleStart = indexHtml.indexOf('<div class="articles-grille" id="homepageArticles">');
+    // Chercher le div avec ou sans data-prerendered (apres un build precedent)
+    let hpGrilleStart = indexHtml.indexOf('<div class="articles-grille" id="homepageArticles">');
+    if (hpGrilleStart === -1) {
+        hpGrilleStart = indexHtml.indexOf('<div class="articles-grille" id="homepageArticles" data-prerendered="true">');
+    }
     if (hpGrilleStart !== -1) {
         // Trouver la fermeture </div> correspondante
         const hpOpenTagEnd = indexHtml.indexOf('>', hpGrilleStart) + 1;

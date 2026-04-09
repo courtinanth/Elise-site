@@ -652,33 +652,16 @@ async function loadBlogList() {
     const isPrerendered = grille.hasAttribute('data-prerendered');
     const isInitialLoad = currentBlogPage <= 1 && !currentCollectionSlug;
 
-    // Si pre-rendu et chargement initial (page 1, pas de filtre), garder le contenu
-    // On charge quand meme les filtres et la pagination en arriere-plan
-    if (isPrerendered && isInitialLoad) {
-        // Retirer le flag pour les navigations suivantes
+    // Si pre-rendu et chargement initial, garder le contenu visible
+    // mais rafraichir en arriere-plan pour afficher les derniers articles
+    if (isPrerendered) {
         grille.removeAttribute('data-prerendered');
-
-        // Charger les collections pour les filtres
-        if (cachedCollections.length === 0) {
-            cachedCollections = await getCollections();
-        }
-        cachedCollections.forEach((col, index) => getCollectionColor(col.slug, index));
-
-        if (filtresContainer) {
-            filtresContainer.innerHTML = renderCollectionFilters(cachedCollections, currentCollectionSlug);
-        }
-
-        // Charger le total pour la pagination
-        const { total } = await getArticles({ limit: ARTICLES_PER_PAGE, page: 1 });
-        const totalPages = Math.ceil(total / ARTICLES_PER_PAGE);
-        if (paginationContainer) {
-            paginationContainer.innerHTML = renderBlogPagination(1, totalPages, '');
-        }
-        return;
     }
 
-    // Mode dynamique : afficher un loader
-    grille.innerHTML = '<div class="loading-spinner-blog"><div class="spinner-blog"></div><p>Chargement...</p></div>';
+    // Afficher un loader seulement si pas de contenu pre-rendu
+    if (!isPrerendered) {
+        grille.innerHTML = '<div class="loading-spinner-blog"><div class="spinner-blog"></div><p>Chargement...</p></div>';
+    }
 
     // Charger les collections si pas en cache
     if (cachedCollections.length === 0) {
